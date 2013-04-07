@@ -26,6 +26,8 @@
  */
 package Run;
 
+import GUI.Project;
+
 /**
  * Clase encargada de iniciar la aplicación "Metaforensic"
  *
@@ -50,6 +52,7 @@ public class Run {
     }
 
     private static void AppInit() {
-        
+        Project pj = new Project();
+        pj.setVisible(true);
     }
 }

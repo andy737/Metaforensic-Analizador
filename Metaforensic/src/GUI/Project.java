@@ -4,17 +4,59 @@
  */
 package GUI;
 
+import Windows.FrameIcons;
+import Windows.WindowsStyle;
+import java.awt.CardLayout;
+
 /**
  *
  * @author andy737-1
  */
 public class Project extends javax.swing.JFrame {
 
+    private FrameIcons ic;
+    private CardLayout paneles;
+
     /**
      * Creates new form Project
      */
     public Project() {
+        ic = FrameIcons.getInstance();
+        WindowsStyle.SetStyle();
+        ic.SetIcon();
+        this.setIconImages(ic.GetIcon());
+        this.setLocationRelativeTo(null);
         initComponents();
+        this.setLocationRelativeTo(null);
+        paneles = (CardLayout) panelContenedor.getLayout();
+        paneles.show(panelContenedor, "card3");
+    }
+
+    /*
+     * Muestra la interfaz informativa Acerca de
+     */
+    private void CallAboutUS() {
+        AboutUs au = new AboutUs(this, true);
+        au.setVisible(true);
+    }
+
+    private void LoadPanel(int op) {
+        switch (op) {
+            case 1:
+                paneles.show(panelContenedor, "card2");
+                break;
+            case 2:
+                paneles.show(panelContenedor, "card4");
+                break;
+            case 3:
+                paneles.show(panelContenedor, "card5");
+                break;
+            case 4:
+                paneles.show(panelContenedor, "card6");
+                break;
+
+        }
+
     }
 
     /**
@@ -26,56 +68,176 @@ public class Project extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jSeparator1 = new javax.swing.JSeparator();
+        jLabel1 = new javax.swing.JLabel();
+        btnNuevo = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
+        panelContenedor = new javax.swing.JPanel();
+        new_1 = new GUI.New_();
+        presentation1 = new GUI.Presentation();
+        open1 = new GUI.Open();
+        select1 = new GUI.Select();
+        delete1 = new GUI.Delete();
+        btnAbrir = new javax.swing.JButton();
+        lbAcercaDe = new javax.swing.JLabel();
+        btnConsul = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Metaforensic [Analizador]");
+        setResizable(false);
+
+        jLabel1.setFont(new java.awt.Font("Microsoft YaHei", 1, 12)); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/folder-duplicate-2.png"))); // NOI18N
+        jLabel1.setText("Proyecto");
+
+        btnNuevo.setFont(new java.awt.Font("Microsoft YaHei", 1, 11)); // NOI18N
+        btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/add.png"))); // NOI18N
+        btnNuevo.setMnemonic('w');
+        btnNuevo.setText("Nuevo");
+        btnNuevo.setToolTipText("");
+        btnNuevo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnNuevoMouseClicked(evt);
+            }
+        });
+        btnNuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevoActionPerformed(evt);
+            }
+        });
+
+        btnEliminar.setFont(new java.awt.Font("Microsoft YaHei", 1, 11)); // NOI18N
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/delete.png"))); // NOI18N
+        btnEliminar.setMnemonic('e');
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
+        panelContenedor.setLayout(new java.awt.CardLayout());
+        panelContenedor.add(new_1, "card2");
+        panelContenedor.add(presentation1, "card3");
+        panelContenedor.add(open1, "card4");
+        panelContenedor.add(select1, "card5");
+        panelContenedor.add(delete1, "card6");
+
+        btnAbrir.setFont(new java.awt.Font("Microsoft YaHei", 1, 11)); // NOI18N
+        btnAbrir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/folder.png"))); // NOI18N
+        btnAbrir.setMnemonic('o');
+        btnAbrir.setText("Abrir");
+        btnAbrir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAbrirActionPerformed(evt);
+            }
+        });
+
+        lbAcercaDe.setDisplayedMnemonic('a');
+        lbAcercaDe.setFont(new java.awt.Font("Microsoft YaHei", 0, 10)); // NOI18N
+        lbAcercaDe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/link-2.png"))); // NOI18N
+        lbAcercaDe.setText("Acerca de");
+        lbAcercaDe.setToolTipText("Información general de la aplicación");
+        lbAcercaDe.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lbAcercaDe.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lbAcercaDeMouseClicked(evt);
+            }
+        });
+
+        btnConsul.setFont(new java.awt.Font("Microsoft YaHei", 1, 11)); // NOI18N
+        btnConsul.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/eye-2.png"))); // NOI18N
+        btnConsul.setMnemonic('c');
+        btnConsul.setText("Consulta");
+        btnConsul.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConsulActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panelContenedor, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnAbrir, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnConsul)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEliminar)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jSeparator1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lbAcercaDe)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1))
+                    .addComponent(lbAcercaDe))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnNuevo)
+                    .addComponent(btnAbrir)
+                    .addComponent(btnEliminar)
+                    .addComponent(btnConsul))
+                .addGap(18, 18, 18)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(panelContenedor, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Project.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Project.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Project.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Project.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void lbAcercaDeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbAcercaDeMouseClicked
+        CallAboutUS();
+    }//GEN-LAST:event_lbAcercaDeMouseClicked
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Project().setVisible(true);
-            }
-        });
-    }
+    private void btnNuevoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevoMouseClicked
+    }//GEN-LAST:event_btnNuevoMouseClicked
+
+    private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
+        LoadPanel(1);
+    }//GEN-LAST:event_btnNuevoActionPerformed
+
+    private void btnAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirActionPerformed
+        LoadPanel(2);
+    }//GEN-LAST:event_btnAbrirActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        LoadPanel(4);
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnConsulActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsulActionPerformed
+        LoadPanel(3);
+    }//GEN-LAST:event_btnConsulActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAbrir;
+    private javax.swing.JButton btnConsul;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnNuevo;
+    private GUI.Delete delete1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel lbAcercaDe;
+    private GUI.New_ new_1;
+    private GUI.Open open1;
+    private javax.swing.JPanel panelContenedor;
+    private GUI.Presentation presentation1;
+    private GUI.Select select1;
     // End of variables declaration//GEN-END:variables
 }
