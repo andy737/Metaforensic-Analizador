@@ -4,17 +4,111 @@
  */
 package GUI;
 
+import Process.DateTime;
+import Windows.ModalDialog;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+
 /**
  *
  * @author andy737-1
  */
 public class Select extends javax.swing.JPanel {
+    
+    private ModalDialog md;
+    private FileOutputStream logout;
+    private OutputStreamWriter outlog;
+    private BufferedWriter outfinal;
 
     /**
      * Creates new form Open
      */
     public Select() {
         initComponents();
+    }
+    
+    private void ExitApp() {
+        int seleccion = JOptionPane.showOptionDialog(this, "¿Deseas salir de la aplicación?", "Salir", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Aceptar", "Cancelar"}, "Cancelar");
+        if (seleccion == 0) {
+            System.exit(0);
+        }
+    }
+    
+    private void SaveFile() {
+        boolean ciclo = true;
+        while (ciclo) {
+            ciclo = SelectDir(txtaCon);
+        }
+    }
+    
+    private void CreateFile(String path) {
+        try {
+            logout = new FileOutputStream(path + "\\" + DateTime.getDate().toString().replace("-", "") + "_" + DateTime.getTimeMilli().toString().replace(":", "") + "_" + cmbProyecto.getSelectedItem() + ".log");
+            outlog = new OutputStreamWriter(logout, "UTF-8");
+            outfinal = new BufferedWriter(outlog);
+            txtaCon.write(outfinal);
+            outfinal.flush();
+        } catch (IOException ex) {
+            md.setDialogo("No se pudo crear el archivo " + path + "\\" + DateTime.getDate().toString().replace("-", "") + "_" + DateTime.getTimeMilli().toString().replace(":", "") + "_" + cmbProyecto.getSelectedItem() + ".log" + " en la carpeta: \n" + path);
+            md.setTitulo("Error de archivo");
+            md.setFrame(this);
+            md.DialogErr();
+        } finally {
+            if (outfinal != null) {
+                try {
+                    outfinal.close();
+                } catch (IOException ex) {
+                    md.setDialogo("No se pudo cerrar corretacmente el archivo " + path + "\\" + DateTime.getDate().toString().replace("-", "") + "_" + DateTime.getTimeMilli().toString().replace(":", "") + "_" + cmbProyecto.getSelectedItem() + ".log");
+                    md.setTitulo("Error de archivo");
+                    md.setFrame(this);
+                    md.DialogErr();
+                }
+            }
+        }
+    }
+    
+    private boolean SelectDir(JTextArea txt) {
+        
+        boolean ciclo = false;
+        int rseleccion = fchGuardar.showDialog(this, "Guardar");
+        if (rseleccion == JFileChooser.APPROVE_OPTION) {
+            File directorio = new File(fchGuardar.getSelectedFile().toPath().toString());
+            if (directorio.isDirectory()) {
+                CreateFile(directorio.toString());
+                ciclo = false;
+            } else {
+                txt.setText("");
+                md = new ModalDialog();
+                md.setDialogo("El directorio no existe.");
+                md.setTitulo("Error de ruta");
+                md.setFrame(this);
+                md.DialogErrFix();
+                txt.requestFocus(true);
+                ciclo = true;
+            }
+        }
+        return ciclo;
+    }
+    
+    private void ValidaTxt() {
+        if (!txtaCon.getText().equals("") || txtaCon.getText() != null) {
+            md = new ModalDialog();
+            md.setDialogo("Selecciona un proyecto.");
+            md.setFrame(this);
+            md.setTitulo("Error de validación");
+            md.DialogErrFix();
+            cmbProyecto.requestFocus();
+        } else {
+            SaveFile();
+        }
     }
 
     /**
@@ -28,6 +122,7 @@ public class Select extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        fchGuardar = new javax.swing.JFileChooser();
         jLabel1 = new javax.swing.JLabel();
         cmbProyecto = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
@@ -42,6 +137,11 @@ public class Select extends javax.swing.JPanel {
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
+
+        fchGuardar.setApproveButtonText("Guardar");
+        fchGuardar.setCurrentDirectory(null);
+        fchGuardar.setDialogTitle("Guardar información o eventos del proyecto");
+        fchGuardar.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
 
         setPreferredSize(new java.awt.Dimension(453, 298));
 
@@ -67,6 +167,11 @@ public class Select extends javax.swing.JPanel {
         btnSalir.setMaximumSize(new java.awt.Dimension(93, 25));
         btnSalir.setMinimumSize(new java.awt.Dimension(93, 25));
         btnSalir.setPreferredSize(new java.awt.Dimension(93, 25));
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalirActionPerformed(evt);
+            }
+        });
 
         btnEventos.setFont(new java.awt.Font("Microsoft YaHei", 1, 11)); // NOI18N
         btnEventos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/clipboard-2.png"))); // NOI18N
@@ -85,6 +190,11 @@ public class Select extends javax.swing.JPanel {
         btnGuarda.setMaximumSize(new java.awt.Dimension(93, 25));
         btnGuarda.setMinimumSize(new java.awt.Dimension(93, 25));
         btnGuarda.setPreferredSize(new java.awt.Dimension(93, 25));
+        btnGuarda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -134,11 +244,20 @@ public class Select extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        ExitApp();
+    }//GEN-LAST:event_btnSalirActionPerformed
+    
+    private void btnGuardaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardaActionPerformed
+        ValidaTxt();
+    }//GEN-LAST:event_btnGuardaActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEventos;
     private javax.swing.JButton btnGuarda;
     private javax.swing.JButton btnSalir;
     private javax.swing.JComboBox cmbProyecto;
+    private javax.swing.JFileChooser fchGuardar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;

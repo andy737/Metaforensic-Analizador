@@ -4,17 +4,53 @@
  */
 package GUI;
 
+import Windows.ModalDialog;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author andy737-1
  */
 public class Delete extends javax.swing.JPanel {
 
+    private ModalDialog md;
+
     /**
      * Creates new form Open
      */
     public Delete() {
         initComponents();
+    }
+
+    private void InitProcess() {
+        md = new ModalDialog();
+        md.setDialogo("¿Deseas eliminar el proyecto seleccionado?");
+        md.setFrame(this);
+        md.setTitulo("Confirmación");
+        md.Dialog();
+        if (md.getSeleccion() == 0) {
+            //CollectMetadata();
+        }
+    }
+
+    private void ValidaCombo() {
+        if (cmbProyecto.getSelectedIndex() == -1) {
+            md = new ModalDialog();
+            md.setDialogo("Selecciona un proyecto.");
+            md.setFrame(this);
+            md.setTitulo("Error de validación");
+            md.DialogErrFix();
+            cmbProyecto.requestFocus();
+        } else {
+            InitProcess();
+        }
+    }
+
+    private void ExitApp() {
+        int seleccion = JOptionPane.showOptionDialog(this, "¿Deseas salir de la aplicación?", "Salir", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Aceptar", "Cancelar"}, "Cancelar");
+        if (seleccion == 0) {
+            System.exit(0);
+        }
     }
 
     /**
@@ -66,6 +102,11 @@ public class Delete extends javax.swing.JPanel {
         btnSalir.setMaximumSize(new java.awt.Dimension(93, 25));
         btnSalir.setMinimumSize(new java.awt.Dimension(93, 25));
         btnSalir.setPreferredSize(new java.awt.Dimension(93, 25));
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalirActionPerformed(evt);
+            }
+        });
 
         btnEliminar.setFont(new java.awt.Font("Microsoft YaHei", 1, 11)); // NOI18N
         btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/minus.png"))); // NOI18N
@@ -74,6 +115,11 @@ public class Delete extends javax.swing.JPanel {
         btnEliminar.setMaximumSize(new java.awt.Dimension(93, 25));
         btnEliminar.setMinimumSize(new java.awt.Dimension(93, 25));
         btnEliminar.setPreferredSize(new java.awt.Dimension(93, 25));
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Microsoft YaHei", 1, 12)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 0, 0));
@@ -126,6 +172,14 @@ public class Delete extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        ValidaCombo();
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
+        ExitApp();
+    }//GEN-LAST:event_btnSalirActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnSalir;

@@ -17,6 +17,14 @@
         </Component>
       </SubComponents>
     </Container>
+    <Component class="javax.swing.JFileChooser" name="fchGuardar">
+      <Properties>
+        <Property name="approveButtonText" type="java.lang.String" value="Guardar"/>
+        <Property name="currentDirectory" type="java.io.File" value="null"/>
+        <Property name="dialogTitle" type="java.lang.String" value="Guardar informaci&#xf3;n o eventos del proyecto"/>
+        <Property name="fileSelectionMode" type="int" value="1"/>
+      </Properties>
+    </Component>
   </NonVisualComponents>
   <Properties>
     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -162,6 +170,9 @@
           <Dimension value="[93, 25]"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSalirActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnEventos">
       <Properties>
@@ -209,6 +220,9 @@
           <Dimension value="[93, 25]"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGuardaActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

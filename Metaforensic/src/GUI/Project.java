@@ -1,12 +1,35 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * *****************************************************************************
+ *    
+ * Metaforensic version 1.0 - Análisis forense de metadatos en archivos
+ * electrónicos Copyright (C) 2012-2013 TSU. Andrés de Jesús Hernández Martínez,
+ * TSU. Idania Aquino Cruz, All Rights Reserved, https://github.com/andy737   
+ * 
+ * This file is part of Metaforensic.
+ *
+ * Metaforensic is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Metaforensic is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Metaforensic.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * E-mail: andy1818ster@gmail.com
+ * 
+ * *****************************************************************************
  */
 package GUI;
 
 import Windows.FrameIcons;
 import Windows.WindowsStyle;
 import java.awt.CardLayout;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -25,7 +48,6 @@ public class Project extends javax.swing.JFrame {
         WindowsStyle.SetStyle();
         ic.SetIcon();
         this.setIconImages(ic.GetIcon());
-        this.setLocationRelativeTo(null);
         initComponents();
         this.setLocationRelativeTo(null);
         paneles = (CardLayout) panelContenedor.getLayout();
@@ -59,6 +81,13 @@ public class Project extends javax.swing.JFrame {
 
     }
 
+    private void ExitApp() {
+        int seleccion = JOptionPane.showOptionDialog(this, "¿Deseas salir de la aplicación?", "Salir", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Aceptar", "Cancelar"}, "Cancelar");
+        if (seleccion == 0) {
+            System.exit(0);
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -82,9 +111,14 @@ public class Project extends javax.swing.JFrame {
         lbAcercaDe = new javax.swing.JLabel();
         btnConsul = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Metaforensic [Analizador]");
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Microsoft YaHei", 1, 12)); // NOI18N
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/folder-duplicate-2.png"))); // NOI18N
@@ -225,6 +259,10 @@ public class Project extends javax.swing.JFrame {
     private void btnConsulActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsulActionPerformed
         LoadPanel(3);
     }//GEN-LAST:event_btnConsulActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        ExitApp();
+    }//GEN-LAST:event_formWindowClosing
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAbrir;
     private javax.swing.JButton btnConsul;

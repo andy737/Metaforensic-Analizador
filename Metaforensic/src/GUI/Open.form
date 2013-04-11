@@ -44,7 +44,7 @@
                   <Component id="cmbProyecto" min="-2" pref="245" max="-2" attributes="0"/>
                   <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="0" pref="155" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="208" max="32767" attributes="0"/>
           </Group>
           <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
           <Group type="102" alignment="1" attributes="0">
@@ -65,7 +65,7 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane2" pref="146" max="32767" attributes="0"/>
+              <Component id="jScrollPane2" pref="144" max="32767" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jSeparator1" min="-2" pref="10" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -148,6 +148,9 @@
           <Dimension value="[93, 25]"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jButton2">
       <Properties>
@@ -169,6 +172,9 @@
           <Dimension value="[93, 25]"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

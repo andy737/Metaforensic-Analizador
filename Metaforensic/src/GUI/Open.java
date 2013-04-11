@@ -1,8 +1,33 @@
 /*
- * To change this template, choose Tools | Templates
- * and Open the template in the editor.
+ * *****************************************************************************
+ *    
+ * Metaforensic version 1.0 - Análisis forense de metadatos en archivos
+ * electrónicos Copyright (C) 2012-2013 TSU. Andrés de Jesús Hernández Martínez,
+ * TSU. Idania Aquino Cruz, All Rights Reserved, https://github.com/andy737   
+ * 
+ * This file is part of Metaforensic.
+ *
+ * Metaforensic is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Metaforensic is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Metaforensic.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * E-mail: andy1818ster@gmail.com
+ * 
+ * *****************************************************************************
  */
 package GUI;
+
+import Windows.ModalDialog;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -10,11 +35,44 @@ package GUI;
  */
 public class Open extends javax.swing.JPanel {
 
+    private ModalDialog md;
+
     /**
      * Creates new form Open
      */
     public Open() {
         initComponents();
+    }
+
+    private void InitProcess() {
+        md = new ModalDialog();
+        md.setDialogo("¿Deseas continuar con la apertura del proyecto seleccionado?");
+        md.setFrame(this);
+        md.setTitulo("Confirmación");
+        md.Dialog();
+        if (md.getSeleccion() == 0) {
+            //CollectMetadata();
+        }
+    }
+
+    private void ValidaCombo() {
+        if (cmbProyecto.getSelectedIndex() == -1) {
+            md = new ModalDialog();
+            md.setDialogo("Selecciona un proyecto.");
+            md.setFrame(this);
+            md.setTitulo("Error de validación");
+            md.DialogErrFix();
+            cmbProyecto.requestFocus();
+        } else {
+            InitProcess();
+        }
+    }
+
+    private void ExitApp() {
+        int seleccion = JOptionPane.showOptionDialog(this, "¿Deseas salir de la aplicación?", "Salir", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Aceptar", "Cancelar"}, "Cancelar");
+        if (seleccion == 0) {
+            System.exit(0);
+        }
     }
 
     /**
@@ -65,6 +123,11 @@ public class Open extends javax.swing.JPanel {
         jButton1.setMaximumSize(new java.awt.Dimension(93, 25));
         jButton1.setMinimumSize(new java.awt.Dimension(93, 25));
         jButton1.setPreferredSize(new java.awt.Dimension(93, 25));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setFont(new java.awt.Font("Microsoft YaHei", 1, 11)); // NOI18N
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/book-lines-2.png"))); // NOI18N
@@ -73,6 +136,11 @@ public class Open extends javax.swing.JPanel {
         jButton2.setMaximumSize(new java.awt.Dimension(93, 25));
         jButton2.setMinimumSize(new java.awt.Dimension(93, 25));
         jButton2.setPreferredSize(new java.awt.Dimension(93, 25));
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -83,7 +151,7 @@ public class Open extends javax.swing.JPanel {
                     .addComponent(jLabel1)
                     .addComponent(cmbProyecto, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addGap(0, 155, Short.MAX_VALUE))
+                .addGap(0, 208, Short.MAX_VALUE))
             .addComponent(jScrollPane2)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -101,7 +169,7 @@ public class Open extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -111,6 +179,14 @@ public class Open extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        ValidaCombo();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        ExitApp();
+    }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cmbProyecto;
     private javax.swing.JButton jButton1;
