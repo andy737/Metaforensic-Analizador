@@ -37,21 +37,23 @@ public class Delete extends javax.swing.JPanel {
     }
 
     public final void LoadCombo() {
-        lc = new OperationBD(2);
-        lc.getCombo();
-        if (!lc.ErroSta()) {
-            for (int j = 0; j < lc.getCombo().size(); j++) {
-                cmbProyectoD.addItem(lc.getCombo().get(j));
-                //if (lc.getCombo().size() >= 1) {
-                //   if (j == lc.getCombo().size() - 1) {
+        try {
+            lc = new OperationBD(2);
+            lc.getCombo();
+            if (!lc.ErroSta()) {
+                for (int j = 0; j < lc.getCombo().size(); j++) {
+                    cmbProyectoD.addItem(lc.getCombo().get(j));
+                    //if (lc.getCombo().size() >= 1) {
+                    //   if (j == lc.getCombo().size() - 1) {
 
-                // }
-                //}
+                    // }
+                    //}
+                }
+                flag = true;
             }
-            flag = true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        cmbProyectoD.revalidate();
-        cmbProyectoD.repaint();
     }
 
     private void InitProcess() {
@@ -73,6 +75,7 @@ public class Delete extends javax.swing.JPanel {
                 md.setFrame(this);
                 md.setTitulo("Confirmación");
                 md.DialogCon();
+                flag = false;
             }
 
         }
