@@ -33,11 +33,11 @@ public class Delete extends javax.swing.JPanel {
     }
 
     private void LoadCombo() {
-        lc = new OperationBD(2);
+        lc = new OperationBD(5);
         lc.getCombo();
         if (!lc.ErroSta()) {
-            for (int i = 0; i < lc.getCombo().size();i++) {
-                cmbProyecto.addItem(lc.getCombo().get(i));
+            for (int j = 0; j < lc.getCombo().size(); j++) {
+                cmbProyecto.addItem(lc.getCombo().get(j));
             }
         }
     }
@@ -78,6 +78,7 @@ public class Delete extends javax.swing.JPanel {
     private void ViewInfo(java.awt.event.ItemEvent evt) {
         String[] atrib = {"Id. Proyecto: ", "Nombre: ", "Descripción: ", "Autor: ", "Fecha de Creación: ", "Hora de Creación: ", "Id. Archivo cargado: ", "tipo: ", "Tamaño: ", "Tipo de Cifrado: ", "Directorio: ", "Fecha de Recolección: ", " Hora de Recolección: ", "Fecha de Carga: ", "Hora de Carga: "};
         if (evt.getStateChange() == ItemEvent.SELECTED) {
+            dv.setId(cmbProyecto.getSelectedItem().toString());
             lc = new OperationBD(4);
             for (int i = 1; i < lc.getInfo().size() - 1; i++) {
                 txtaCon.append(atrib[i]);

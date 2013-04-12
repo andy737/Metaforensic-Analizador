@@ -26,11 +26,9 @@
  */
 package GUI;
 
-import DataBase.ConfigMysql;
 import Windows.FrameIcons;
 import Windows.WindowsStyle;
 import java.awt.CardLayout;
-import java.awt.Component;
 import javax.swing.JOptionPane;
 
 /**

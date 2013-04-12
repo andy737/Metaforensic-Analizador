@@ -44,6 +44,7 @@ public class ConfigMysql {
     private String ip;
     private String port;
     private String user;
+    private String password;
     private File archivo;
     private FileReader fr;
     private BufferedReader br;
@@ -53,9 +54,10 @@ public class ConfigMysql {
 
     private ConfigMysql() {
         archivo = null;
-        flag=
+        password = "";
+        flag = false;
         fr = null;
-        sta=
+        sta = false;
         br = null;
         ip = "";
         port = "";
@@ -80,17 +82,17 @@ public class ConfigMysql {
                     StringTokenizer useR = new StringTokenizer(br.readLine(), ":");
                     useR.nextToken();
                     user = useR.nextToken().trim();
-                    
+
                 }
             } else {
 
                 JOptionPane.showMessageDialog((Component) null, "El archivo de configuración global no existe.", "Error de Configuración", JOptionPane.ERROR_MESSAGE, null);
-                System.exit(0);
+
             }
 
         } catch (IOException | HeadlessException e) {
             JOptionPane.showMessageDialog((Component) null, "Error de archivo de fichero de configuración global.", "Error de E/S", JOptionPane.ERROR_MESSAGE, null);
-            System.exit(0);
+
 
         } finally {
 
@@ -121,8 +123,8 @@ public class ConfigMysql {
         return user;
     }
 
-    private void setPass() {
-        String tmp1, tmp2;
+    public void setPass() {
+        String tmp1;
         JPanel pn = new JPanel();
         JPasswordField pwd = new JPasswordField(25);
         JLabel lb = new JLabel("Ingresa el password de la BD: \n");
@@ -131,9 +133,17 @@ public class ConfigMysql {
 
         if (JOptionPane.showConfirmDialog(null, pn, "Conexión a la base de datos.", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
             tmp1 = new String(pwd.getPassword());
-                    password = tmp1;
-            }
+            password = tmp1;
+            sta = true;
+            flag = false;
+        } else {
+            sta = false;
+            flag = true;
         }
+    }
+
+    public void ErrPass(String password) {
+        this.password = password;
     }
 
     public String getPass() {
@@ -150,10 +160,6 @@ public class ConfigMysql {
     }
 
     public boolean PassSta() {
-       return sta;
-    }
-
-    public void ErrPass(String string) {
-       
+        return sta;
     }
 }

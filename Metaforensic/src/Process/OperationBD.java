@@ -93,6 +93,15 @@ public class OperationBD {
                     conf.ErrPass("");
                 }
                 break;
+            case 5:
+                con = conn.getConexion();
+                if (con != null) {
+                    LoadInfo();
+                } else {
+                    erroglob = true;
+                    conf.ErrPass("");
+                }
+                break;
         }
 
     }
@@ -148,16 +157,6 @@ public class OperationBD {
             JOptionPane.showMessageDialog((Component) null, "La base de datos no reconoce este procedimiento.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
         }
 
-    }
-
-    private boolean InitPass() {
-        if (conf.getPass().equals("") || conf.getPass() == null) {
-            conf.setPass();
-            if (conf.PassSta()) {
-                return true;
-            }
-        }
-        return true;
     }
 
     private double SizeFile(File archivo) {
