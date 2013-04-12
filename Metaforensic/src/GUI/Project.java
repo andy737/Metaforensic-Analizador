@@ -26,9 +26,11 @@
  */
 package GUI;
 
+import DataBase.ConfigMysql;
 import Windows.FrameIcons;
 import Windows.WindowsStyle;
 import java.awt.CardLayout;
+import java.awt.Component;
 import javax.swing.JOptionPane;
 
 /**
@@ -52,6 +54,7 @@ public class Project extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         paneles = (CardLayout) panelContenedor.getLayout();
         paneles.show(panelContenedor, "card3");
+
     }
 
     /*

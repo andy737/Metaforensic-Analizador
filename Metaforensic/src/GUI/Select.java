@@ -5,14 +5,13 @@
 package GUI;
 
 import Process.DateTime;
+import Process.OperationBD;
 import Windows.ModalDialog;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
@@ -22,33 +21,47 @@ import javax.swing.JTextArea;
  * @author andy737-1
  */
 public class Select extends javax.swing.JPanel {
-    
+
     private ModalDialog md;
     private FileOutputStream logout;
     private OutputStreamWriter outlog;
     private BufferedWriter outfinal;
+    private OperationBD lc;
 
     /**
      * Creates new form Open
      */
     public Select() {
+        lc = null;
         initComponents();
+        LoadCombo();
+        cmbProyecto.setSelectedIndex(-1);
     }
-    
+
+    private void LoadCombo() {
+        lc = new OperationBD(2);
+        lc.getCombo();
+        if (!lc.ErroSta()) {
+            for (int i = 0; i < lc.getCombo().size(); i++) {
+                cmbProyecto.addItem(lc.getCombo().get(i));
+            }
+        }
+    }
+
     private void ExitApp() {
         int seleccion = JOptionPane.showOptionDialog(this, "¿Deseas salir de la aplicación?", "Salir", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Aceptar", "Cancelar"}, "Cancelar");
         if (seleccion == 0) {
             System.exit(0);
         }
     }
-    
+
     private void SaveFile() {
         boolean ciclo = true;
         while (ciclo) {
             ciclo = SelectDir(txtaCon);
         }
     }
-    
+
     private void CreateFile(String path) {
         try {
             logout = new FileOutputStream(path + "\\" + DateTime.getDate().toString().replace("-", "") + "_" + DateTime.getTimeMilli().toString().replace(":", "") + "_" + cmbProyecto.getSelectedItem() + ".log");
@@ -74,9 +87,9 @@ public class Select extends javax.swing.JPanel {
             }
         }
     }
-    
+
     private boolean SelectDir(JTextArea txt) {
-        
+
         boolean ciclo = false;
         int rseleccion = fchGuardar.showDialog(this, "Guardar");
         if (rseleccion == JFileChooser.APPROVE_OPTION) {
@@ -97,7 +110,7 @@ public class Select extends javax.swing.JPanel {
         }
         return ciclo;
     }
-    
+
     private void ValidaTxt() {
         if (!txtaCon.getText().equals("") || txtaCon.getText() != null) {
             md = new ModalDialog();
@@ -154,9 +167,10 @@ public class Select extends javax.swing.JPanel {
         txtaCon.setEditable(false);
         txtaCon.setColumns(20);
         txtaCon.setFont(new java.awt.Font("Microsoft YaHei", 0, 12)); // NOI18N
+        txtaCon.setForeground(new java.awt.Color(0, 0, 153));
         txtaCon.setLineWrap(true);
         txtaCon.setRows(5);
-        txtaCon.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtaCon.setDisabledTextColor(new java.awt.Color(0, 0, 153));
         txtaCon.setEnabled(false);
         jScrollPane2.setViewportView(txtaCon);
 
@@ -248,7 +262,7 @@ public class Select extends javax.swing.JPanel {
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         ExitApp();
     }//GEN-LAST:event_btnSalirActionPerformed
-    
+
     private void btnGuardaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardaActionPerformed
         ValidaTxt();
     }//GEN-LAST:event_btnGuardaActionPerformed

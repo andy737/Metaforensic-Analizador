@@ -29,7 +29,6 @@ package DataBase;
 import java.awt.Component;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
@@ -40,76 +39,78 @@ import javax.swing.JOptionPane;
 public class ConectionBD {
 
     private Connection conn;
-    private PreparedStatement sentenciaSQL;
+    private boolean sta;
     private String controlador;
     private String password;
     private String user;
     private String port;
     private String ip;
-    private configMysql lee;
+    private ConfigMysql lee;
 
     public ConectionBD() {
-        lee=configMysql.getInstance();
-        password="";
-        user="";
-        port="";
-        ip="";
+        lee = ConfigMysql.getInstance();
+        password = "";
+        user = "";
+        port = "";
+        ip = "";
         conn = null;
-        sentenciaSQL = null;
+        sta = true;
         controlador = "com.mysql.jdbc.Driver";
     }
 
-    public void conBD() throws SQLException {
+    private void conBD() {
         lee.leerFichero();
         ip = lee.getIp();
         port = lee.getPort();
         user = lee.getUser();
         password = lee.getPass();
-        if (!ip.equals("") && !port.equals("") && !user.equals("") && !password.equals("")) {
+        if (!ip.equals("") && !port.equals("") && !user.equals("")) {
             try {
                 Class.forName(controlador).newInstance();
                 conn = DriverManager.getConnection("jdbc:mysql://" + ip + ":" + port + "/metaforensic", user, password);
+                sta = true;
             } catch (ClassNotFoundException e) {
+                sta = false;
                 JOptionPane.showMessageDialog((Component) null, "La aplicación no se pudo conectar a la base de datos.\nRevisa la configuración.", "Error de Conexión", JOptionPane.ERROR_MESSAGE, null);
-                System.exit(0);
+                // System.exit(0);
             } catch (SQLException e) {
-
-                JOptionPane.showMessageDialog((Component) null, "La aplicación no se pudo conectar a la base de datos.\nRevisa la configuración.", "Error de Conexión", JOptionPane.ERROR_MESSAGE, null);
-                System.exit(0);
+                sta = false;
+                if (!lee.getFlag()) {
+                    JOptionPane.showMessageDialog((Component) null, "La contraseña es incorrecta.", "Error de autenticación", JOptionPane.ERROR_MESSAGE, null);
+                }
+                //System.exit(0);
             } catch (InstantiationException e) {
-
+                sta = false;
                 JOptionPane.showMessageDialog((Component) null, "La aplicación no se pudo conectar a la base de datos.\nRevisa la configuración.", "Error de Conexión", JOptionPane.ERROR_MESSAGE, null);
-                System.exit(0);
+                // System.exit(0);
             } catch (IllegalAccessException e) {
-
+                sta = false;
                 JOptionPane.showMessageDialog((Component) null, "La aplicación no se pudo conectar a la base de datos.\nRevisa la configuración.", "Error de Conexión", JOptionPane.ERROR_MESSAGE, null);
-                System.exit(0);
+                //System.exit(0);
             }
         } else {
-
+            sta = false;
             JOptionPane.showMessageDialog((Component) null, "El fichero global no contiene una configuración correcta o no existe.", "Error de Base de Datos", JOptionPane.ERROR_MESSAGE, null);
-            System.exit(0);
+            //System.exit(0);
 
         }
 
     }
 
-    public void desconectar() {
-        try {
-
-            if (sentenciaSQL != null) {
-                sentenciaSQL.close();
-            }
-            if (conn != null) {
-                conn.close();
-
-            }
-
-        } catch (SQLException ignorada) {
-        }
+    public boolean BDStatus() {
+        return sta;
     }
 
     public Connection getConexion() {
+        conBD();
         return conn;
+    }
+
+    public void Cerrar() {
+        try {
+            conn.close();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog((Component) null, "El cierre de la conexion ha la base de datos falló.", "Error de Base de Datos", JOptionPane.ERROR_MESSAGE, null);
+        }
     }
 }

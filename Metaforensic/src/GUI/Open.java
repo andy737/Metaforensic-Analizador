@@ -26,6 +26,7 @@
  */
 package GUI;
 
+import Process.OperationBD;
 import Windows.ModalDialog;
 import javax.swing.JOptionPane;
 
@@ -36,12 +37,26 @@ import javax.swing.JOptionPane;
 public class Open extends javax.swing.JPanel {
 
     private ModalDialog md;
+    private OperationBD lc;
 
     /**
      * Creates new form Open
      */
     public Open() {
         initComponents();
+        LoadCombo();
+        lc = null;
+        cmbProyecto.setSelectedIndex(-1);
+    }
+
+    private void LoadCombo() {
+        lc = new OperationBD(2);
+        lc.getCombo();
+        if (!lc.ErroSta()) {
+            for (int i = 0; i < lc.getCombo().size(); i++) {
+                cmbProyecto.addItem(lc.getCombo().get(i));
+            }
+        }
     }
 
     private void InitProcess() {
@@ -110,9 +125,10 @@ public class Open extends javax.swing.JPanel {
         txtaInfo.setEditable(false);
         txtaInfo.setColumns(20);
         txtaInfo.setFont(new java.awt.Font("Microsoft YaHei", 0, 12)); // NOI18N
+        txtaInfo.setForeground(new java.awt.Color(0, 0, 153));
         txtaInfo.setLineWrap(true);
         txtaInfo.setRows(5);
-        txtaInfo.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtaInfo.setDisabledTextColor(new java.awt.Color(0, 0, 153));
         txtaInfo.setEnabled(false);
         jScrollPane2.setViewportView(txtaInfo);
 

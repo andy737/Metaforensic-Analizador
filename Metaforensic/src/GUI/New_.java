@@ -27,6 +27,7 @@
 package GUI;
 
 import Process.NewValues;
+import Process.OperationBD;
 import Process.ValidateInfo;
 import Windows.Clean;
 import Windows.ModalDialog;
@@ -58,7 +59,7 @@ public class New_ extends javax.swing.JPanel {
         values = NewValues.getInstance();
     }
 
-    private boolean SelectDir(JTextField txt) throws IOException {
+    private boolean SelectDir(JTextField txt) {
 
         boolean ciclo = false;
         FileNameExtensionFilter filtro = new FileNameExtensionFilter("Archivo Metaforensic (.afa)", "afa");
@@ -88,17 +89,26 @@ public class New_ extends javax.swing.JPanel {
     private void SeleccionAfa() {
         boolean ciclo = true;
         while (ciclo) {
-            try {
-                ciclo = SelectDir(txtRuta);
-            } catch (IOException ex) {
-                Logger.getLogger(New_.class
-                        .getName()).log(Level.SEVERE, null, ex);
-            }
+            ciclo = SelectDir(txtRuta);
         }
     }
 
-    private void CleanGUI() throws IOException {
-        CleanDialog("Limpiar", "¿Deseas limpiar los campos y opciones?");
+    private void CleanGUI() {
+        try {
+            CleanDialog("Limpiar", "¿Deseas limpiar los campos y opciones?");
+        } catch (IOException ex) {
+            Logger.getLogger(New_.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void CleanGUIDirect() {
+        if (this != null) {
+            Clean.getAllComponents(this);
+            Clean.CleanTxt();
+            Clean.CleanCombo();
+            Clean.CleanCheck();
+            Clean.CleanPaneTxt();
+        }
     }
 
     private void SetValues() {
@@ -246,7 +256,15 @@ public class New_ extends javax.swing.JPanel {
                         md.setTitulo("Confirmación");
                         md.Dialog();
                         if (md.getSeleccion() == 0) {
-                            //CollectMetadata();
+                            OperationBD operationBD = new OperationBD(1);
+                            if (!operationBD.ErroSta()) {
+                                CleanGUIDirect();
+                                md = new ModalDialog();
+                                md.setDialogo("El proyecto fue creado con exito.");
+                                md.setFrame(this);
+                                md.setTitulo("Confirmación");
+                                md.Dialog();
+                            }
                         }
 
                     } catch (Exception ex) {
@@ -443,12 +461,7 @@ public class New_ extends javax.swing.JPanel {
     }//GEN-LAST:event_btnCargaActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
-        try {
-            CleanGUI();
-        } catch (IOException ex) {
-            Logger.getLogger(New_.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
+        CleanGUI();
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void txtRutaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtRutaFocusLost

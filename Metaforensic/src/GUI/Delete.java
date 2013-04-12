@@ -4,7 +4,11 @@
  */
 package GUI;
 
+import Process.DeleteValues;
+import Process.OperationBD;
+import Windows.Clean;
 import Windows.ModalDialog;
+import java.awt.event.ItemEvent;
 import javax.swing.JOptionPane;
 
 /**
@@ -14,12 +18,37 @@ import javax.swing.JOptionPane;
 public class Delete extends javax.swing.JPanel {
 
     private ModalDialog md;
+    private OperationBD lc;
+    private DeleteValues dv;
 
     /**
      * Creates new form Open
      */
     public Delete() {
+        dv = DeleteValues.getInstance();
+        lc = null;
         initComponents();
+        LoadCombo();
+        cmbProyecto.setSelectedIndex(-1);
+    }
+
+    private void LoadCombo() {
+        lc = new OperationBD(2);
+        lc.getCombo();
+        if (!lc.ErroSta()) {
+            for (int i = 0; i < lc.getCombo().size();i++) {
+                cmbProyecto.addItem(lc.getCombo().get(i));
+            }
+        }
+    }
+
+    public void CleanGUIDirect() {
+        if (this != null) {
+            Clean.getAllComponents(this);
+            Clean.CleanTxt();
+            Clean.CleanCombo();
+            Clean.CleanAreaTxt();
+        }
     }
 
     private void InitProcess() {
@@ -29,8 +58,33 @@ public class Delete extends javax.swing.JPanel {
         md.setTitulo("Confirmación");
         md.Dialog();
         if (md.getSeleccion() == 0) {
-            //CollectMetadata();
+            dv.setId(cmbProyecto.getSelectedItem().toString());
+            lc = new OperationBD(3);
+            if (!lc.ErroSta()) {
+                cmbProyecto.removeAllItems();
+                LoadCombo();
+                cmbProyecto.setSelectedIndex(-1);
+                CleanGUIDirect();
+                md = new ModalDialog();
+                md.setDialogo("El proyecto fue eliminado con exito.");
+                md.setFrame(this);
+                md.setTitulo("Confirmación");
+                md.Dialog();
+            }
+
         }
+    }
+
+    private void ViewInfo(java.awt.event.ItemEvent evt) {
+        String[] atrib = {"Id. Proyecto: ", "Nombre: ", "Descripción: ", "Autor: ", "Fecha de Creación: ", "Hora de Creación: ", "Id. Archivo cargado: ", "tipo: ", "Tamaño: ", "Tipo de Cifrado: ", "Directorio: ", "Fecha de Recolección: ", " Hora de Recolección: ", "Fecha de Carga: ", "Hora de Carga: "};
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            lc = new OperationBD(4);
+            for (int i = 1; i < lc.getInfo().size() - 1; i++) {
+                txtaCon.append(atrib[i]);
+                txtaCon.append(lc.getInfo().get(i).toString() + "\n");
+            }
+        }
+
     }
 
     private void ValidaCombo() {
@@ -83,15 +137,22 @@ public class Delete extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Microsoft YaHei", 0, 12)); // NOI18N
         jLabel1.setText("Selecciona un proyecto:");
 
+        cmbProyecto.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbProyectoItemStateChanged(evt);
+            }
+        });
+
         jLabel2.setFont(new java.awt.Font("Microsoft YaHei", 0, 12)); // NOI18N
         jLabel2.setText("Información:");
 
         txtaCon.setEditable(false);
         txtaCon.setColumns(20);
         txtaCon.setFont(new java.awt.Font("Microsoft YaHei", 0, 12)); // NOI18N
+        txtaCon.setForeground(new java.awt.Color(0, 0, 153));
         txtaCon.setLineWrap(true);
         txtaCon.setRows(5);
-        txtaCon.setDisabledTextColor(new java.awt.Color(0, 0, 0));
+        txtaCon.setDisabledTextColor(new java.awt.Color(0, 0, 153));
         txtaCon.setEnabled(false);
         jScrollPane2.setViewportView(txtaCon);
 
@@ -180,6 +241,10 @@ public class Delete extends javax.swing.JPanel {
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         ExitApp();
     }//GEN-LAST:event_btnSalirActionPerformed
+
+    private void cmbProyectoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbProyectoItemStateChanged
+        ViewInfo(evt);
+    }//GEN-LAST:event_cmbProyectoItemStateChanged
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnSalir;

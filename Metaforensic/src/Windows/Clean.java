@@ -25,12 +25,14 @@
  */
 package Windows;
 
+import GUI.Delete;
 import GUI.New_;
 import java.awt.Component;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JViewport;
@@ -65,6 +67,12 @@ public class Clean {
         }
     }
 
+    public static void getAllComponents(Delete c) {
+        if (c.getComponents() != null) {
+            arr = c.getComponents();
+        }
+    }
+
     /**
      * Limpia JTextBox
      */
@@ -91,6 +99,27 @@ public class Clean {
                         for (i = 0; i < c.length; i++) {
                             if (c[i] instanceof JTextPane) {
                                 ((JTextPane) c[i]).setText("");
+                                i = 2;
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
+    public static void CleanAreaTxt() {
+        Component[] c;
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] instanceof JScrollPane) {
+                c = ((JScrollPane) arr[i]).getComponents();
+                for (i = 0; i < c.length; i++) {
+                    if (c[i] instanceof JViewport) {
+                        c = ((JViewport) c[i]).getComponents();
+                        for (i = 0; i < c.length; i++) {
+                            if (c[i] instanceof JTextArea) {
+                                ((JTextArea) c[i]).setText("");
                                 i = 2;
                             }
                         }

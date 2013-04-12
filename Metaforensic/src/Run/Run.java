@@ -26,7 +26,12 @@
  */
 package Run;
 
+import DataBase.ConectionBD;
+import DataBase.ConfigMysql;
 import GUI.Project;
+import Windows.FrameIcons;
+import Windows.WindowsStyle;
+import javax.swing.JOptionPane;
 
 /**
  * Clase encargada de iniciar la aplicación "Metaforensic"
@@ -37,22 +42,46 @@ import GUI.Project;
  */
 public class Run {
 
+    private static ConfigMysql my;
+    private static FrameIcons ic;
+    private static ConectionBD con;
     //static Logger logger = Logger.getLogger(Run.class);
+
     /**
      * Inicio de la aplicación
      *
      * @param args (valor default)
      */
     public static void main(String[] args) {
+        my = ConfigMysql.getInstance();
+        ic = FrameIcons.getInstance();
+        con = new ConectionBD();
+        WindowsStyle.SetStyle();
+        AppInit();
         //BasicConfigurator.configure();
         //logger.info("Ingresando a la aplicación");
         //Splash.RunSplash(null, false);        
         //Run.AppInit();
-        AppInit();
+
     }
 
     private static void AppInit() {
-        Project pj = new Project();
-        pj.setVisible(true);
+        my.setPass();
+        if (!my.PassSta()) {
+            JOptionPane.showMessageDialog(null, "Debes ingresar el password de la base de datos para iniciar la aplicación.", "Fin de aplicación", JOptionPane.ERROR_MESSAGE, null);
+            System.exit(0);
+        } else {
+            con.getConexion();
+            if (con.BDStatus()) {
+                con.Cerrar();
+                Project pj = new Project();
+                pj.setVisible(true);
+
+            } else {
+
+                JOptionPane.showMessageDialog(null, "Debes ingresar el password correcto de la base de datos para iniciar la aplicación.", "Fin de aplicación", JOptionPane.ERROR_MESSAGE, null);
+                System.exit(0);
+            }
+        }
     }
 }
