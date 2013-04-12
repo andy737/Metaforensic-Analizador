@@ -41,7 +41,7 @@
           <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
           <Component id="jSeparator1" alignment="1" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
-              <Component id="cmbProyecto" min="-2" pref="245" max="-2" attributes="0"/>
+              <Component id="cmbProyectoD" min="-2" pref="245" max="-2" attributes="0"/>
               <EmptySpace min="20" pref="208" max="32767" attributes="0"/>
           </Group>
           <Group type="102" attributes="0">
@@ -72,7 +72,7 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="cmbProyecto" min="-2" max="-2" attributes="0"/>
+              <Component id="cmbProyectoD" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
@@ -100,14 +100,14 @@
         <Property name="text" type="java.lang.String" value="Selecciona un proyecto:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JComboBox" name="cmbProyecto">
+    <Component class="javax.swing.JComboBox" name="cmbProyectoD">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="0"/>
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cmbProyectoItemStateChanged"/>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cmbProyectoDItemStateChanged"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">

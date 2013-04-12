@@ -51,12 +51,14 @@ public class New_ extends javax.swing.JPanel {
     private ValidateInfo valinfo;
     private Thread t;
     private NewValues values;
+    private final Delete dl;
 
     public New_() {
         initComponents();
         md = null;
         t = null;
         values = NewValues.getInstance();
+        dl = new Delete();
     }
 
     private boolean SelectDir(JTextField txt) {
@@ -263,7 +265,10 @@ public class New_ extends javax.swing.JPanel {
                                 md.setDialogo("El proyecto fue creado con exito.");
                                 md.setFrame(this);
                                 md.setTitulo("Confirmación");
-                                md.Dialog();
+                                md.DialogCon();
+                                dl.LoadCombo();
+                                dl.revalidate();
+                                dl.repaint();
                             }
                         }
 

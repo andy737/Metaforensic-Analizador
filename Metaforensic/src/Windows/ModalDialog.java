@@ -79,6 +79,11 @@ public class ModalDialog {
                 dialogo, titulo, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Aceptar", "Cancelar"}, "Cancelar");
     }
 
+     public void DialogCon() {
+
+        seleccion = JOptionPane.showOptionDialog(j,
+                dialogo, titulo, JOptionPane.YES_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new Object[]{"Aceptar"}, "Aceptar");
+    }
     /**
      *
      * @return hilo que maneja al joptionpane para evitar errores de ejecucion

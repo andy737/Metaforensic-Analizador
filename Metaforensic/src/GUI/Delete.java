@@ -5,8 +5,8 @@
 package GUI;
 
 import Process.DeleteValues;
+import Process.IdVal;
 import Process.OperationBD;
-import Windows.Clean;
 import Windows.ModalDialog;
 import java.awt.event.ItemEvent;
 import javax.swing.JOptionPane;
@@ -20,35 +20,38 @@ public class Delete extends javax.swing.JPanel {
     private ModalDialog md;
     private OperationBD lc;
     private DeleteValues dv;
+    private boolean flag;
+    private IdVal iv;
 
     /**
      * Creates new form Open
      */
     public Delete() {
         dv = DeleteValues.getInstance();
+        iv = IdVal.getInstance();
         lc = null;
+        flag = false;
         initComponents();
         LoadCombo();
-        cmbProyecto.setSelectedIndex(-1);
+        cmbProyectoD.setSelectedIndex(-1);
     }
 
-    private void LoadCombo() {
-        lc = new OperationBD(5);
+    public final void LoadCombo() {
+        lc = new OperationBD(2);
         lc.getCombo();
         if (!lc.ErroSta()) {
             for (int j = 0; j < lc.getCombo().size(); j++) {
-                cmbProyecto.addItem(lc.getCombo().get(j));
-            }
-        }
-    }
+                cmbProyectoD.addItem(lc.getCombo().get(j));
+                //if (lc.getCombo().size() >= 1) {
+                //   if (j == lc.getCombo().size() - 1) {
 
-    public void CleanGUIDirect() {
-        if (this != null) {
-            Clean.getAllComponents(this);
-            Clean.CleanTxt();
-            Clean.CleanCombo();
-            Clean.CleanAreaTxt();
+                // }
+                //}
+            }
+            flag = true;
         }
+        cmbProyectoD.revalidate();
+        cmbProyectoD.repaint();
     }
 
     private void InitProcess() {
@@ -58,44 +61,47 @@ public class Delete extends javax.swing.JPanel {
         md.setTitulo("Confirmación");
         md.Dialog();
         if (md.getSeleccion() == 0) {
-            dv.setId(cmbProyecto.getSelectedItem().toString());
+            dv.setId(cmbProyectoD.getSelectedItem().toString());
             lc = new OperationBD(3);
             if (!lc.ErroSta()) {
-                cmbProyecto.removeAllItems();
+                cmbProyectoD.removeAllItems();
                 LoadCombo();
-                cmbProyecto.setSelectedIndex(-1);
-                CleanGUIDirect();
+                cmbProyectoD.setSelectedIndex(-1);
+                txtaCon.setText("");
                 md = new ModalDialog();
                 md.setDialogo("El proyecto fue eliminado con exito.");
                 md.setFrame(this);
                 md.setTitulo("Confirmación");
-                md.Dialog();
+                md.DialogCon();
             }
 
         }
     }
 
     private void ViewInfo(java.awt.event.ItemEvent evt) {
-        String[] atrib = {"Id. Proyecto: ", "Nombre: ", "Descripción: ", "Autor: ", "Fecha de Creación: ", "Hora de Creación: ", "Id. Archivo cargado: ", "tipo: ", "Tamaño: ", "Tipo de Cifrado: ", "Directorio: ", "Fecha de Recolección: ", " Hora de Recolección: ", "Fecha de Carga: ", "Hora de Carga: "};
-        if (evt.getStateChange() == ItemEvent.SELECTED) {
-            dv.setId(cmbProyecto.getSelectedItem().toString());
+        String[] atrib = {"Id. Proyecto: ", "Nombre: ", "Descripción: ", "Autor: ", "Fecha de Creación: ", "Hora de Creación: ", "Id. Archivo Cargado: ", "tipo: ", "Nombre de Archivo: ", "Tamaño: ", "Tipo de Cifrado: ", "Directorio: ", "Fecha de Recolección: ", "Hora de Recolección: ", "Fecha de Carga: ", "Hora de Carga: "};
+        if (evt.getStateChange() == ItemEvent.SELECTED && flag) {
+            txtaCon.setText("");
+            dv.setId(cmbProyectoD.getSelectedItem().toString());
+            iv.setId(dv.getId());
             lc = new OperationBD(4);
-            for (int i = 1; i < lc.getInfo().size() - 1; i++) {
+            for (int i = 0; i < lc.getInfo().size(); i++) {
                 txtaCon.append(atrib[i]);
                 txtaCon.append(lc.getInfo().get(i).toString() + "\n");
             }
+            txtaCon.setCaretPosition(0);
         }
 
     }
 
     private void ValidaCombo() {
-        if (cmbProyecto.getSelectedIndex() == -1) {
+        if (cmbProyectoD.getSelectedIndex() == -1) {
             md = new ModalDialog();
             md.setDialogo("Selecciona un proyecto.");
             md.setFrame(this);
             md.setTitulo("Error de validación");
             md.DialogErrFix();
-            cmbProyecto.requestFocus();
+            cmbProyectoD.requestFocus();
         } else {
             InitProcess();
         }
@@ -120,7 +126,7 @@ public class Delete extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
-        cmbProyecto = new javax.swing.JComboBox();
+        cmbProyectoD = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtaCon = new javax.swing.JTextArea();
@@ -138,9 +144,9 @@ public class Delete extends javax.swing.JPanel {
         jLabel1.setFont(new java.awt.Font("Microsoft YaHei", 0, 12)); // NOI18N
         jLabel1.setText("Selecciona un proyecto:");
 
-        cmbProyecto.addItemListener(new java.awt.event.ItemListener() {
+        cmbProyectoD.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cmbProyectoItemStateChanged(evt);
+                cmbProyectoDItemStateChanged(evt);
             }
         });
 
@@ -195,7 +201,7 @@ public class Delete extends javax.swing.JPanel {
             .addComponent(jScrollPane2)
             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(cmbProyecto, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cmbProyectoD, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 208, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -218,7 +224,7 @@ public class Delete extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmbProyecto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cmbProyectoD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -243,13 +249,13 @@ public class Delete extends javax.swing.JPanel {
         ExitApp();
     }//GEN-LAST:event_btnSalirActionPerformed
 
-    private void cmbProyectoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbProyectoItemStateChanged
+    private void cmbProyectoDItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbProyectoDItemStateChanged
         ViewInfo(evt);
-    }//GEN-LAST:event_cmbProyectoItemStateChanged
+    }//GEN-LAST:event_cmbProyectoDItemStateChanged
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnSalir;
-    private javax.swing.JComboBox cmbProyecto;
+    private javax.swing.JComboBox cmbProyectoD;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

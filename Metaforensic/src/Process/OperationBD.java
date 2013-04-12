@@ -25,6 +25,7 @@ import javax.swing.JOptionPane;
  */
 public class OperationBD {
 
+    private File tmp;
     private ConectionBD conn;
     private ConfigMysql conf;
     private NewValues new_;
@@ -37,17 +38,26 @@ public class OperationBD {
     private int op;
     private ArrayList combo;
     private ArrayList info;
+    private ArrayList all;
+    private ArrayList eve;
+    private ArrayList eveAll;
+    private IdVal iv;
 
     public OperationBD(int op) {
+        iv = IdVal.getInstance();
         conn = new ConectionBD();
         idtmp = "";
         erroglob = false;
+        eve = null;
         fn = new FileName();
         conf = ConfigMysql.getInstance();
         new_ = NewValues.getInstance();
         call = null;
         combo = null;
         info = null;
+        all = null;
+        tmp = null;
+        eveAll = null;
         dl = DeleteValues.getInstance();
         this.op = op;
         SelectOpPane(op);
@@ -60,7 +70,10 @@ public class OperationBD {
                 con = conn.getConexion();
                 if (con != null) {
                     CreatePro();
+                    CreateProEven();
                     InsertFile();
+                    CreateEven("Se inserto el archivo \"" + fn.filename(tmp) + "\".afa en el proyecto ");
+
                 } else {
                     erroglob = true;
                     conf.ErrPass("");
@@ -79,6 +92,7 @@ public class OperationBD {
                 con = conn.getConexion();
                 if (con != null) {
                     DeletePro();
+                    //GeneraDelEven();
                 } else {
                     erroglob = true;
                     conf.ErrPass("");
@@ -96,7 +110,25 @@ public class OperationBD {
             case 5:
                 con = conn.getConexion();
                 if (con != null) {
-                    LoadInfo();
+                    LoadAll();
+                } else {
+                    erroglob = true;
+                    conf.ErrPass("");
+                }
+                break;
+            case 6:
+                con = conn.getConexion();
+                if (con != null) {
+                    LoadEve();
+                } else {
+                    erroglob = true;
+                    conf.ErrPass("");
+                }
+                break;
+            case 7:
+                con = conn.getConexion();
+                if (con != null) {
+                    LoadEveAll();
                 } else {
                     erroglob = true;
                     conf.ErrPass("");
@@ -106,28 +138,111 @@ public class OperationBD {
 
     }
 
-    private void LoadInfo() {
-        info = new ArrayList();
+    private void LoadEveAll() {
+        eveAll = new ArrayList();
+        int i;
         try {
             if (conn.BDStatus()) {
-                call = con.prepareCall("{call consulta_proyecto(?)}");
-                call.setString(1, dl.getId());
-                ResultSet rs = call.executeQuery();
-                while (rs.next()) {
-                    info.add(rs.getString(1));
+                call = con.prepareCall("{call consulta_proyecto_evenAll()}");
+                try (ResultSet rs = call.executeQuery()) {
+                    while (rs.next()) {
+                        i = 1;
+                        while (i < 5) {
+                            eveAll.add(rs.getObject(i));
+                            i++;
+                        }
+                    }
+                    rs.close();
                 }
                 call.close();
                 con.close();
             }
         } catch (SQLException ex) {
             erroglob = true;
-            JOptionPane.showMessageDialog((Component) null, "La base de datos no reconoce este procedimiento.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
+            JOptionPane.showMessageDialog((Component) null, "La base de datos no puede cargar los eventos.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
+        }
+    }
+
+    private void LoadEve() {
+        eve = new ArrayList();
+        int i;
+        try {
+            if (conn.BDStatus()) {
+                call = con.prepareCall("{call consulta_proyecto_even(?)}");
+                call.setString(1, iv.getId());
+                try (ResultSet rs = call.executeQuery()) {
+                    while (rs.next()) {
+                        i = 1;
+                        while (i < 5) {
+                            eve.add(rs.getObject(i));
+                            i++;
+                        }
+                    }
+                    rs.close();
+                }
+                call.close();
+                con.close();
+            }
+        } catch (SQLException ex) {
+            erroglob = true;
+            JOptionPane.showMessageDialog((Component) null, "La base de datos no puede cargar los eventos.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
+        }
+    }
+
+    private void LoadAll() {
+        all = new ArrayList();
+        int i;
+        try {
+            if (conn.BDStatus()) {
+                call = con.prepareCall("{call consulta_proyecto_gen()}");
+                try (ResultSet rs = call.executeQuery()) {
+                    while (rs.next()) {
+                        i = 1;
+                        while (i < 17) {
+                            all.add(rs.getObject(i));
+                            i++;
+                        }
+                    }
+                    rs.close();
+                }
+                call.close();
+                con.close();
+            }
+        } catch (SQLException ex) {
+            erroglob = true;
+            JOptionPane.showMessageDialog((Component) null, "La base de datos no puede cargar la información.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
+        }
+    }
+
+    private void LoadInfo() {
+        info = new ArrayList();
+        int i = 1;
+        try {
+            if (conn.BDStatus()) {
+                call = con.prepareCall("{call consulta_proyecto(?)}");
+                call.setString(1, iv.getId());
+                try (ResultSet rs = call.executeQuery()) {
+                    if (rs.next()) {
+                        while (i < 17) {
+                            info.add(rs.getObject(i));
+                            i++;
+                        }
+                    }
+                    rs.close();
+                }
+                call.close();
+                con.close();
+            }
+        } catch (SQLException ex) {
+            erroglob = true;
+            JOptionPane.showMessageDialog((Component) null, "La base de datos no puede cargar la información.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
         }
     }
 
     private void GeneraDelEven() {
 
         try {
+            con = conn.getConexion();
             if (conn.BDStatus()) {
                 call = con.prepareCall("{call genera_even_deleteproy(?)}");
                 call.setString(1, dl.getId());
@@ -137,24 +252,24 @@ public class OperationBD {
             }
         } catch (SQLException ex) {
             erroglob = true;
-            JOptionPane.showMessageDialog((Component) null, "La base de datos no reconoce este procedimiento.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
+            JOptionPane.showMessageDialog((Component) null, "La base de datos no puede generar el evento universal.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
         }
 
     }
 
     private void DeletePro() {
         try {
+            con = conn.getConexion();
             if (conn.BDStatus()) {
                 call = con.prepareCall("{call eliminar_proyecto(?)}");
                 call.setString(1, dl.getId());
                 call.executeUpdate();
                 call.close();
                 con.close();
-                GeneraDelEven();
             }
         } catch (SQLException ex) {
             erroglob = true;
-            JOptionPane.showMessageDialog((Component) null, "La base de datos no reconoce este procedimiento.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
+            JOptionPane.showMessageDialog((Component) null, "La base de datos no puede generar el evento delete.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
         }
 
     }
@@ -166,7 +281,7 @@ public class OperationBD {
     }
 
     private void InsertFile() {
-        File tmp = new File(new_.getRuta());
+        tmp = new File(new_.getRuta());
         long ms = tmp.lastModified();
         int hora, minutos, segundos;
         Date d = new Date(ms);
@@ -194,12 +309,10 @@ public class OperationBD {
                 call.executeUpdate();
                 call.close();
                 con.close();
-                CreateEven("Se inserto el archivo " + fn.filename(tmp) + ".afa en el proyecto ");
-
             }
         } catch (SQLException ex) {
             erroglob = true;
-            JOptionPane.showMessageDialog((Component) null, "La base de datos no reconoce este procedimiento.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
+            JOptionPane.showMessageDialog((Component) null, "La base de datos no puede cargar el archivo.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
         }
     }
 
@@ -209,7 +322,7 @@ public class OperationBD {
 
     private void CreateEven(String msg) {
         try {
-            conn.getConexion();
+            con = conn.getConexion();
             if (conn.BDStatus()) {
                 call = con.prepareCall("{call genera_even_universal(?,?)}");
                 call.setString(1, idtmp);
@@ -220,13 +333,13 @@ public class OperationBD {
             }
         } catch (SQLException ex) {
             erroglob = true;
-            JOptionPane.showMessageDialog((Component) null, "La base de datos no reconoce este procedimiento.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
+            JOptionPane.showMessageDialog((Component) null, "La base de datos no puede generar el evento.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
         }
     }
 
     private void CreateProEven() {
         try {
-            conn.getConexion();
+            con = conn.getConexion();
             if (conn.BDStatus()) {
                 call = con.prepareCall("{call genera_even_insertproy(?)}");
                 call.setString(1, idtmp);
@@ -236,12 +349,13 @@ public class OperationBD {
             }
         } catch (SQLException ex) {
             erroglob = true;
-            JOptionPane.showMessageDialog((Component) null, "La base de datos no reconoce este procedimiento.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
+            JOptionPane.showMessageDialog((Component) null, "La base de datos no puede generar el evento creación.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
         }
     }
 
     private void CreatePro() {
         try {
+            conn.getConexion();
             if (conn.BDStatus()) {
                 call = con.prepareCall("{call insertar_proyecto(?,?,?)}");
                 call.setString(1, new_.getNombre());
@@ -253,11 +367,10 @@ public class OperationBD {
                 }
                 call.close();
                 con.close();
-                CreateProEven();
             }
         } catch (SQLException ex) {
             erroglob = true;
-            JOptionPane.showMessageDialog((Component) null, "La base de datos no reconoce este procedimiento.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
+            JOptionPane.showMessageDialog((Component) null, "La base de datos no puede crear el proyecto.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
         }
     }
 
@@ -265,8 +378,20 @@ public class OperationBD {
         return combo;
     }
 
+    public ArrayList getEvenAll() {
+        return eveAll;
+    }
+
+    public ArrayList getAll() {
+        return all;
+    }
+
     public ArrayList getInfo() {
         return info;
+    }
+
+    public ArrayList getEven() {
+        return eve;
     }
 
     private void LoadCombo() {
@@ -283,7 +408,7 @@ public class OperationBD {
             }
         } catch (SQLException ex) {
             erroglob = true;
-            JOptionPane.showMessageDialog((Component) null, "La base de datos no reconoce este procedimiento.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
+            JOptionPane.showMessageDialog((Component) null, "La base de datos no puede llenar los combos.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
         }
     }
 }

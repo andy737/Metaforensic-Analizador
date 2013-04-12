@@ -55,7 +55,7 @@
           </Group>
           <Component id="jSeparator1" alignment="1" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
-              <Component id="cmbProyecto" min="-2" pref="245" max="-2" attributes="0"/>
+              <Component id="cmbProyectoS" min="-2" pref="245" max="-2" attributes="0"/>
               <EmptySpace pref="85" max="32767" attributes="0"/>
               <Component id="btnEventos" min="-2" pref="103" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
@@ -79,7 +79,7 @@
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="cmbProyecto" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="cmbProyectoS" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnEventos" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -109,12 +109,15 @@
         <Property name="text" type="java.lang.String" value="Selecciona un proyecto:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JComboBox" name="cmbProyecto">
+    <Component class="javax.swing.JComboBox" name="cmbProyectoS">
       <Properties>
         <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
           <StringArray count="0"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cmbProyectoSItemStateChanged"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
@@ -197,11 +200,17 @@
           <Dimension value="[93, 25]"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEventosActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JRadioButton" name="rdbTodo">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Mostrar todos"/>
+        <Property name="text" type="java.lang.String" value="Mostrar todo"/>
       </Properties>
+      <Events>
+        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="rdbTodoItemStateChanged"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnGuarda">
       <Properties>

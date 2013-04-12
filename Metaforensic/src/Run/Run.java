@@ -29,9 +29,11 @@ package Run;
 import DataBase.ConectionBD;
 import DataBase.ConfigMysql;
 import GUI.Project;
+import Process.OperationBD;
 import Windows.FrameIcons;
 import Windows.WindowsStyle;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  * Clase encargada de iniciar la aplicación "Metaforensic"
@@ -41,11 +43,11 @@ import javax.swing.JOptionPane;
  * @version 1.0
  */
 public class Run {
-
+    
     private static ConfigMysql my;
-    private static FrameIcons ic;
     private static ConectionBD con;
     //static Logger logger = Logger.getLogger(Run.class);
+    private static FrameIcons ic;
 
     /**
      * Inicio de la aplicación
@@ -53,18 +55,25 @@ public class Run {
      * @param args (valor default)
      */
     public static void main(String[] args) {
-        my = ConfigMysql.getInstance();
-        ic = FrameIcons.getInstance();
-        con = new ConectionBD();
-        WindowsStyle.SetStyle();
-        AppInit();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                my = ConfigMysql.getInstance();
+                ic = FrameIcons.getInstance();
+                ic.SetIcon();
+                con = new ConectionBD();
+                WindowsStyle.SetStyle();
+                ic.GetIcon();
+                AppInit();
+            }
+        });
         //BasicConfigurator.configure();
         //logger.info("Ingresando a la aplicación");
         //Splash.RunSplash(null, false);        
         //Run.AppInit();
 
     }
-
+    
     private static void AppInit() {
         my.setPass();
         if (!my.PassSta()) {
@@ -76,9 +85,8 @@ public class Run {
                 con.Cerrar();
                 Project pj = new Project();
                 pj.setVisible(true);
-
             } else {
-
+                
                 JOptionPane.showMessageDialog(null, "Debes ingresar el password correcto de la base de datos para iniciar la aplicación.", "Fin de aplicación", JOptionPane.ERROR_MESSAGE, null);
                 System.exit(0);
             }

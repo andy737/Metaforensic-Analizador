@@ -26,8 +26,11 @@
  */
 package GUI;
 
+import Process.IdVal;
+import Process.OpenValues;
 import Process.OperationBD;
 import Windows.ModalDialog;
+import java.awt.event.ItemEvent;
 import javax.swing.JOptionPane;
 
 /**
@@ -38,24 +41,31 @@ public class Open extends javax.swing.JPanel {
 
     private ModalDialog md;
     private OperationBD lc;
+    private OpenValues ov;
+    private boolean flag;
+    private IdVal iv;
 
     /**
      * Creates new form Open
      */
     public Open() {
+        iv = IdVal.getInstance();
+        ov = OpenValues.getInstance();
+        lc = null;
+        flag = false;
         initComponents();
         LoadCombo();
-        lc = null;
-        cmbProyecto.setSelectedIndex(-1);
+        cmbProyectoO.setSelectedIndex(-1);
     }
 
-    private void LoadCombo() {
+    public final void LoadCombo() {
         lc = new OperationBD(2);
         lc.getCombo();
         if (!lc.ErroSta()) {
             for (int i = 0; i < lc.getCombo().size(); i++) {
-                cmbProyecto.addItem(lc.getCombo().get(i));
+                cmbProyectoO.addItem(lc.getCombo().get(i));
             }
+            flag = true;
         }
     }
 
@@ -71,13 +81,13 @@ public class Open extends javax.swing.JPanel {
     }
 
     private void ValidaCombo() {
-        if (cmbProyecto.getSelectedIndex() == -1) {
+        if (cmbProyectoO.getSelectedIndex() == -1) {
             md = new ModalDialog();
             md.setDialogo("Selecciona un proyecto.");
             md.setFrame(this);
             md.setTitulo("Error de validación");
             md.DialogErrFix();
-            cmbProyecto.requestFocus();
+            cmbProyectoO.requestFocus();
         } else {
             InitProcess();
         }
@@ -88,6 +98,22 @@ public class Open extends javax.swing.JPanel {
         if (seleccion == 0) {
             System.exit(0);
         }
+    }
+
+    private void ViewInfo(java.awt.event.ItemEvent evt) {
+        String[] atrib = {"Id. Proyecto: ", "Nombre: ", "Descripción: ", "Autor: ", "Fecha de Creación: ", "Hora de Creación: ", "Id. Archivo Cargado: ", "tipo: ", "Nombre de Archivo: ", "Tamaño: ", "Tipo de Cifrado: ", "Directorio: ", "Fecha de Recolección: ", "Hora de Recolección: ", "Fecha de Carga: ", "Hora de Carga: "};
+        if (evt.getStateChange() == ItemEvent.SELECTED && flag) {
+            txtaInfo.setText("");
+            ov.setId(cmbProyectoO.getSelectedItem().toString());
+            iv.setId(ov.getId());
+            lc = new OperationBD(4);
+            for (int i = 0; i < lc.getInfo().size(); i++) {
+                txtaInfo.append(atrib[i]);
+                txtaInfo.append(lc.getInfo().get(i).toString() + "\n");
+            }
+            txtaInfo.setCaretPosition(0);
+        }
+
     }
 
     /**
@@ -102,7 +128,7 @@ public class Open extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
-        cmbProyecto = new javax.swing.JComboBox();
+        cmbProyectoO = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtaInfo = new javax.swing.JTextArea();
@@ -118,6 +144,12 @@ public class Open extends javax.swing.JPanel {
 
         jLabel1.setFont(new java.awt.Font("Microsoft YaHei", 0, 12)); // NOI18N
         jLabel1.setText("Selecciona un proyecto:");
+
+        cmbProyectoO.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbProyectoOItemStateChanged(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Microsoft YaHei", 0, 12)); // NOI18N
         jLabel2.setText("Información:");
@@ -165,7 +197,7 @@ public class Open extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
-                    .addComponent(cmbProyecto, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbProyectoO, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addGap(0, 208, Short.MAX_VALUE))
             .addComponent(jScrollPane2)
@@ -181,7 +213,7 @@ public class Open extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmbProyecto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cmbProyectoO, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -203,8 +235,12 @@ public class Open extends javax.swing.JPanel {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         ExitApp();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void cmbProyectoOItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbProyectoOItemStateChanged
+        ViewInfo(evt);
+    }//GEN-LAST:event_cmbProyectoOItemStateChanged
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox cmbProyecto;
+    private javax.swing.JComboBox cmbProyectoO;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;

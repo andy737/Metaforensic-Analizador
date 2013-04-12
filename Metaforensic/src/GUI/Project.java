@@ -29,6 +29,7 @@ package GUI;
 import Windows.FrameIcons;
 import Windows.WindowsStyle;
 import java.awt.CardLayout;
+import java.awt.Component;
 import javax.swing.JOptionPane;
 
 /**
@@ -61,6 +62,11 @@ public class Project extends javax.swing.JFrame {
     private void CallAboutUS() {
         AboutUs au = new AboutUs(this, true);
         au.setVisible(true);
+    }
+
+    interface Refreshable {
+
+        void refresh();
     }
 
     private void LoadPanel(int op) {

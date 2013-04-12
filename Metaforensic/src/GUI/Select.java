@@ -5,8 +5,11 @@
 package GUI;
 
 import Process.DateTime;
+import Process.IdVal;
 import Process.OperationBD;
+import Process.SelectValues;
 import Windows.ModalDialog;
+import java.awt.event.ItemEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,24 +30,31 @@ public class Select extends javax.swing.JPanel {
     private OutputStreamWriter outlog;
     private BufferedWriter outfinal;
     private OperationBD lc;
+    private boolean flag;
+    private SelectValues sv;
+    private IdVal iv;
 
     /**
      * Creates new form Open
      */
     public Select() {
+        flag = false;
+        iv = IdVal.getInstance();
+        sv = SelectValues.getInstance();
         lc = null;
         initComponents();
         LoadCombo();
-        cmbProyecto.setSelectedIndex(-1);
+        cmbProyectoS.setSelectedIndex(-1);
     }
 
-    private void LoadCombo() {
+    public final void LoadCombo() {
         lc = new OperationBD(2);
         lc.getCombo();
         if (!lc.ErroSta()) {
             for (int i = 0; i < lc.getCombo().size(); i++) {
-                cmbProyecto.addItem(lc.getCombo().get(i));
+                cmbProyectoS.addItem(lc.getCombo().get(i));
             }
+            flag = true;
         }
     }
 
@@ -62,15 +72,102 @@ public class Select extends javax.swing.JPanel {
         }
     }
 
+    private void ViewInfo(java.awt.event.ItemEvent evt) {
+        String[] atrib = {"Id. Proyecto: ", "Nombre: ", "Descripción: ", "Autor: ", "Fecha de Creación: ", "Hora de Creación: ", "Id. Archivo Cargado: ", "tipo: ", "Nombre de Archivo: ", "Tamaño: ", "Tipo de Cifrado: ", "Directorio: ", "Fecha de Recolección: ", "Hora de Recolección: ", "Fecha de Carga: ", "Hora de Carga: "};
+        if (evt.getStateChange() == ItemEvent.SELECTED && flag) {
+            rdbTodo.setSelected(false);
+            txtaCon.setText("");
+            sv.setId(cmbProyectoS.getSelectedItem().toString());
+            iv.setId(sv.getId());
+            lc = new OperationBD(4);
+            for (int i = 0; i < lc.getInfo().size(); i++) {
+                txtaCon.append(atrib[i]);
+                txtaCon.append(lc.getInfo().get(i).toString() + "\n");
+            }
+            txtaCon.setCaretPosition(0);
+        }
+
+    }
+
+    private void ViewEve() {
+        int j = 0;
+        String[] atrib = {"Id. Evento: ", "Descripción: ", "Fecha Evento: ", "Hora_evento: "};
+        if (flag && !rdbTodo.isSelected()) {
+            txtaCon.setText("");
+            if (cmbProyectoS.getSelectedItem() == null || cmbProyectoS.getSelectedItem().equals("")) {
+                md = new ModalDialog();
+                md.setDialogo("Selecciona un proyecto.");
+                md.setTitulo("Error de visualización");
+                md.setFrame(this);
+                md.DialogErrFix();
+                cmbProyectoS.requestFocus();
+            } else {
+                sv.setId(cmbProyectoS.getSelectedItem().toString());
+                iv.setId(sv.getId());
+                lc = new OperationBD(6);
+                for (int i = 0; i < lc.getEven().size(); i++) {
+                    if (j == 4) {
+                        j = 0;
+                        txtaCon.append("******************************************************\n");
+                    }
+                    txtaCon.append(atrib[j]);
+                    txtaCon.append(lc.getEven().get(i).toString() + "\n");
+                    j++;
+                }
+                txtaCon.setCaretPosition(0);
+            }
+        } else {
+            if (rdbTodo.isSelected()) {
+                j = 0;
+                txtaCon.setText("");
+                lc = new OperationBD(7);
+                for (int i = 0; i < lc.getEvenAll().size(); i++) {
+                    if (j == 4) {
+                        j = 0;
+                        txtaCon.append("******************************************************\n");
+                    }
+                    txtaCon.append(atrib[j]);
+                    txtaCon.append(lc.getEvenAll().get(i).toString() + "\n");
+                    j++;
+                }
+                txtaCon.setCaretPosition(0);
+            }
+        }
+
+    }
+
+    private void ViewAll(java.awt.event.ItemEvent evt) {
+        String[] atrib = {"Id. Proyecto: ", "Nombre: ", "Descripción: ", "Autor: ", "Fecha de Creación: ", "Hora de Creación: ", "Id. Archivo cargado: ", "tipo: ", "Nombre de Archivo: ", "Tamaño: ", "Tipo de Cifrado: ", "Directorio: ", "Fecha de Recolección: ", "Hora de Recolección: ", "Fecha de Carga: ", "Hora de Carga: "};
+        int j = 0;
+        if (evt.getStateChange() == ItemEvent.SELECTED && flag) {
+            txtaCon.setText("");
+            cmbProyectoS.setSelectedIndex(-1);
+//            sv.setId(cmbProyectoS.getSelectedItem().toString());
+            //          iv.setId(sv.getId());
+            lc = new OperationBD(5);
+            for (int i = 0; i < lc.getAll().size(); i++) {
+                if (j == 15) {
+                    j = 0;
+                    txtaCon.append("******************************************************\n");
+                }
+                txtaCon.append(atrib[j]);
+                txtaCon.append(lc.getAll().get(i).toString() + "\n");
+                j++;
+            }
+            txtaCon.setCaretPosition(0);
+        }
+
+    }
+
     private void CreateFile(String path) {
         try {
-            logout = new FileOutputStream(path + "\\" + DateTime.getDate().toString().replace("-", "") + "_" + DateTime.getTimeMilli().toString().replace(":", "") + "_" + cmbProyecto.getSelectedItem() + ".log");
+            logout = new FileOutputStream(path + "\\" + DateTime.getDate().toString().replace("-", "") + "_" + DateTime.getTimeMilli().toString().replace(":", "") + "_" + cmbProyectoS.getSelectedItem() + ".log");
             outlog = new OutputStreamWriter(logout, "UTF-8");
             outfinal = new BufferedWriter(outlog);
             txtaCon.write(outfinal);
             outfinal.flush();
         } catch (IOException ex) {
-            md.setDialogo("No se pudo crear el archivo " + path + "\\" + DateTime.getDate().toString().replace("-", "") + "_" + DateTime.getTimeMilli().toString().replace(":", "") + "_" + cmbProyecto.getSelectedItem() + ".log" + " en la carpeta: \n" + path);
+            md.setDialogo("No se pudo crear el archivo " + path + "\\" + DateTime.getDate().toString().replace("-", "") + "_" + DateTime.getTimeMilli().toString().replace(":", "") + "_" + cmbProyectoS.getSelectedItem() + ".log" + " en la carpeta: \n" + path);
             md.setTitulo("Error de archivo");
             md.setFrame(this);
             md.DialogErr();
@@ -79,7 +176,7 @@ public class Select extends javax.swing.JPanel {
                 try {
                     outfinal.close();
                 } catch (IOException ex) {
-                    md.setDialogo("No se pudo cerrar corretacmente el archivo " + path + "\\" + DateTime.getDate().toString().replace("-", "") + "_" + DateTime.getTimeMilli().toString().replace(":", "") + "_" + cmbProyecto.getSelectedItem() + ".log");
+                    md.setDialogo("No se pudo cerrar corretacmente el archivo " + path + "\\" + DateTime.getDate().toString().replace("-", "") + "_" + DateTime.getTimeMilli().toString().replace(":", "") + "_" + cmbProyectoS.getSelectedItem() + ".log");
                     md.setTitulo("Error de archivo");
                     md.setFrame(this);
                     md.DialogErr();
@@ -118,7 +215,7 @@ public class Select extends javax.swing.JPanel {
             md.setFrame(this);
             md.setTitulo("Error de validación");
             md.DialogErrFix();
-            cmbProyecto.requestFocus();
+            cmbProyectoS.requestFocus();
         } else {
             SaveFile();
         }
@@ -137,7 +234,7 @@ public class Select extends javax.swing.JPanel {
         jTextArea1 = new javax.swing.JTextArea();
         fchGuardar = new javax.swing.JFileChooser();
         jLabel1 = new javax.swing.JLabel();
-        cmbProyecto = new javax.swing.JComboBox();
+        cmbProyectoS = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtaCon = new javax.swing.JTextArea();
@@ -160,6 +257,12 @@ public class Select extends javax.swing.JPanel {
 
         jLabel1.setFont(new java.awt.Font("Microsoft YaHei", 0, 12)); // NOI18N
         jLabel1.setText("Selecciona un proyecto:");
+
+        cmbProyectoS.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbProyectoSItemStateChanged(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Microsoft YaHei", 0, 12)); // NOI18N
         jLabel2.setText("Información:");
@@ -194,8 +297,18 @@ public class Select extends javax.swing.JPanel {
         btnEventos.setMaximumSize(new java.awt.Dimension(93, 25));
         btnEventos.setMinimumSize(new java.awt.Dimension(93, 25));
         btnEventos.setPreferredSize(new java.awt.Dimension(93, 25));
+        btnEventos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEventosActionPerformed(evt);
+            }
+        });
 
-        rdbTodo.setText("Mostrar todos");
+        rdbTodo.setText("Mostrar todo");
+        rdbTodo.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                rdbTodoItemStateChanged(evt);
+            }
+        });
 
         btnGuarda.setFont(new java.awt.Font("Microsoft YaHei", 1, 11)); // NOI18N
         btnGuarda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/stiffy.png"))); // NOI18N
@@ -222,7 +335,7 @@ public class Select extends javax.swing.JPanel {
                 .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(cmbProyecto, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cmbProyectoS, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
                 .addComponent(btnEventos, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
@@ -241,7 +354,7 @@ public class Select extends javax.swing.JPanel {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmbProyecto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbProyectoS, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnEventos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(rdbTodo)
@@ -266,11 +379,23 @@ public class Select extends javax.swing.JPanel {
     private void btnGuardaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardaActionPerformed
         ValidaTxt();
     }//GEN-LAST:event_btnGuardaActionPerformed
+
+    private void cmbProyectoSItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbProyectoSItemStateChanged
+        ViewInfo(evt);
+    }//GEN-LAST:event_cmbProyectoSItemStateChanged
+
+    private void rdbTodoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rdbTodoItemStateChanged
+        ViewAll(evt);
+    }//GEN-LAST:event_rdbTodoItemStateChanged
+
+    private void btnEventosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventosActionPerformed
+        ViewEve();
+    }//GEN-LAST:event_btnEventosActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEventos;
     private javax.swing.JButton btnGuarda;
     private javax.swing.JButton btnSalir;
-    private javax.swing.JComboBox cmbProyecto;
+    private javax.swing.JComboBox cmbProyectoS;
     private javax.swing.JFileChooser fchGuardar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
