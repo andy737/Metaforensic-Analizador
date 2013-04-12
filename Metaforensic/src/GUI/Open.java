@@ -58,15 +58,21 @@ public class Open extends javax.swing.JPanel {
         cmbProyectoO.setSelectedIndex(-1);
     }
 
-    public final void LoadCombo() {
+    public void LoadCombo() {
+        cmbProyectoO.removeAllItems();
+        cmbProyectoO.addItem(null);
         lc = new OperationBD(2);
         lc.getCombo();
         if (!lc.ErroSta()) {
-            for (int i = 0; i < lc.getCombo().size(); i++) {
-                cmbProyectoO.addItem(lc.getCombo().get(i));
+            for (int j = 0; j < lc.getCombo().size(); j++) {
+                cmbProyectoO.addItem(lc.getCombo().get(j));
+                if (lc.getCombo() == null) {
+                    break;
+                }
             }
             flag = true;
         }
+        cmbProyectoO.setSelectedIndex(-1);
     }
 
     private void InitProcess() {

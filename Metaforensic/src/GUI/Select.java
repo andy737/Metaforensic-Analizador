@@ -48,14 +48,20 @@ public class Select extends javax.swing.JPanel {
     }
 
     public final void LoadCombo() {
+        cmbProyectoS.removeAllItems();
+        cmbProyectoS.addItem(null);
         lc = new OperationBD(2);
         lc.getCombo();
         if (!lc.ErroSta()) {
             for (int i = 0; i < lc.getCombo().size(); i++) {
                 cmbProyectoS.addItem(lc.getCombo().get(i));
+                if (lc.getCombo() == null) {
+                    break;
+                }
             }
             flag = true;
         }
+        cmbProyectoS.setSelectedIndex(-1);
     }
 
     private void ExitApp() {
@@ -146,7 +152,7 @@ public class Select extends javax.swing.JPanel {
             //          iv.setId(sv.getId());
             lc = new OperationBD(5);
             for (int i = 0; i < lc.getAll().size(); i++) {
-                if (j == 15) {
+                if (j == 16) {
                     j = 0;
                     txtaCon.append("******************************************************\n");
                 }
@@ -194,6 +200,11 @@ public class Select extends javax.swing.JPanel {
             if (directorio.isDirectory()) {
                 CreateFile(directorio.toString());
                 ciclo = false;
+                md = new ModalDialog();
+                md.setDialogo("El archivo fue creado con éxito.");
+                md.setTitulo("Confirmación");
+                md.setFrame(this);
+                md.DialogCon();
             } else {
                 txt.setText("");
                 md = new ModalDialog();
@@ -209,9 +220,9 @@ public class Select extends javax.swing.JPanel {
     }
 
     private void ValidaTxt() {
-        if (!txtaCon.getText().equals("") || txtaCon.getText() != null) {
+        if (txtaCon.getText().equals("") || txtaCon.getText() == null) {
             md = new ModalDialog();
-            md.setDialogo("Selecciona un proyecto.");
+            md.setDialogo("Selecciona un proyecto o evento.");
             md.setFrame(this);
             md.setTitulo("Error de validación");
             md.DialogErrFix();

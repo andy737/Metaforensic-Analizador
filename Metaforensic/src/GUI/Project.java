@@ -28,8 +28,6 @@ package GUI;
 
 import Windows.FrameIcons;
 import Windows.WindowsStyle;
-import java.awt.CardLayout;
-import java.awt.Component;
 import javax.swing.JOptionPane;
 
 /**
@@ -39,7 +37,8 @@ import javax.swing.JOptionPane;
 public class Project extends javax.swing.JFrame {
 
     private FrameIcons ic;
-    private CardLayout paneles;
+    //private CardLayout paneles;
+    //private OperationBD lc;
 
     /**
      * Creates new form Project
@@ -51,9 +50,11 @@ public class Project extends javax.swing.JFrame {
         this.setIconImages(ic.GetIcon());
         initComponents();
         this.setLocationRelativeTo(null);
-        paneles = (CardLayout) panelContenedor.getLayout();
-        paneles.show(panelContenedor, "card3");
-
+        presentation1.setVisible(true);
+        delete1.setVisible(false);
+        select1.setVisible(false);
+        open1.setVisible(false);
+        new_1.setVisible(false);
     }
 
     /*
@@ -64,24 +65,39 @@ public class Project extends javax.swing.JFrame {
         au.setVisible(true);
     }
 
-    interface Refreshable {
-
-        void refresh();
-    }
-
     private void LoadPanel(int op) {
+
         switch (op) {
             case 1:
-                paneles.show(panelContenedor, "card2");
+                presentation1.setVisible(false);
+                delete1.setVisible(false);
+                select1.setVisible(false);
+                open1.setVisible(false);
+                new_1.setVisible(true);
                 break;
             case 2:
-                paneles.show(panelContenedor, "card4");
+                open1.LoadCombo();
+                presentation1.setVisible(false);
+                delete1.setVisible(false);
+                select1.setVisible(false);
+                open1.setVisible(true);
+                new_1.setVisible(false);
                 break;
             case 3:
-                paneles.show(panelContenedor, "card5");
+                select1.LoadCombo();
+                presentation1.setVisible(false);
+                delete1.setVisible(false);
+                select1.setVisible(true);
+                open1.setVisible(false);
+                new_1.setVisible(false);
                 break;
             case 4:
-                paneles.show(panelContenedor, "card6");
+                delete1.LoadCombo();
+                presentation1.setVisible(false);
+                delete1.setVisible(true);
+                select1.setVisible(false);
+                open1.setVisible(false);
+                new_1.setVisible(false);
                 break;
 
         }
@@ -157,12 +173,24 @@ public class Project extends javax.swing.JFrame {
             }
         });
 
-        panelContenedor.setLayout(new java.awt.CardLayout());
-        panelContenedor.add(new_1, "card2");
-        panelContenedor.add(presentation1, "card3");
-        panelContenedor.add(open1, "card4");
-        panelContenedor.add(select1, "card5");
-        panelContenedor.add(delete1, "card6");
+        javax.swing.GroupLayout panelContenedorLayout = new javax.swing.GroupLayout(panelContenedor);
+        panelContenedor.setLayout(panelContenedorLayout);
+        panelContenedorLayout.setHorizontalGroup(
+            panelContenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(delete1, javax.swing.GroupLayout.PREFERRED_SIZE, 458, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(open1, javax.swing.GroupLayout.PREFERRED_SIZE, 458, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(new_1, javax.swing.GroupLayout.PREFERRED_SIZE, 458, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(presentation1, javax.swing.GroupLayout.PREFERRED_SIZE, 458, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(select1, javax.swing.GroupLayout.PREFERRED_SIZE, 458, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+        panelContenedorLayout.setVerticalGroup(
+            panelContenedorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(delete1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(open1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(new_1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(presentation1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(select1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
 
         btnAbrir.setFont(new java.awt.Font("Microsoft YaHei", 1, 11)); // NOI18N
         btnAbrir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/folder.png"))); // NOI18N
@@ -203,7 +231,7 @@ public class Project extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelContenedor, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
+                    .addComponent(panelContenedor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnNuevo, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -237,7 +265,7 @@ public class Project extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelContenedor, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                .addComponent(panelContenedor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 

@@ -15,13 +15,15 @@ import javax.swing.JOptionPane;
  *
  * @author andy737-1
  */
-public class Delete extends javax.swing.JPanel {
+public final class Delete extends javax.swing.JPanel {
 
     private ModalDialog md;
     private OperationBD lc;
     private DeleteValues dv;
     private boolean flag;
     private IdVal iv;
+    private Open open1;
+    private Select select1;
 
     /**
      * Creates new form Open
@@ -34,26 +36,25 @@ public class Delete extends javax.swing.JPanel {
         initComponents();
         LoadCombo();
         cmbProyectoD.setSelectedIndex(-1);
+        open1 = new Open();
+        select1 = new Select();
     }
 
-    public final void LoadCombo() {
-        try {
-            lc = new OperationBD(2);
-            lc.getCombo();
-            if (!lc.ErroSta()) {
-                for (int j = 0; j < lc.getCombo().size(); j++) {
-                    cmbProyectoD.addItem(lc.getCombo().get(j));
-                    //if (lc.getCombo().size() >= 1) {
-                    //   if (j == lc.getCombo().size() - 1) {
-
-                    // }
-                    //}
+    public void LoadCombo() {
+        cmbProyectoD.removeAllItems();
+        cmbProyectoD.addItem(null);
+        lc = new OperationBD(2);
+        lc.getCombo();
+        if (!lc.ErroSta()) {
+            for (int j = 0; j < lc.getCombo().size(); j++) {
+                cmbProyectoD.addItem(lc.getCombo().get(j));
+                if (lc.getCombo() == null) {
+                    break;
                 }
-                flag = true;
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            flag = true;
         }
+        cmbProyectoD.setSelectedIndex(-1);
     }
 
     private void InitProcess() {
@@ -67,15 +68,17 @@ public class Delete extends javax.swing.JPanel {
             lc = new OperationBD(3);
             if (!lc.ErroSta()) {
                 cmbProyectoD.removeAllItems();
+                flag = false;
                 LoadCombo();
                 cmbProyectoD.setSelectedIndex(-1);
                 txtaCon.setText("");
                 md = new ModalDialog();
-                md.setDialogo("El proyecto fue eliminado con exito.");
+                md.setDialogo("El proyecto fue eliminado con éxito.");
                 md.setFrame(this);
                 md.setTitulo("Confirmación");
                 md.DialogCon();
-                flag = false;
+                open1.LoadCombo();
+                select1.LoadCombo();
             }
 
         }

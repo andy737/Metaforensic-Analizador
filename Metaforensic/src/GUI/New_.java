@@ -28,6 +28,7 @@ package GUI;
 
 import Process.NewValues;
 import Process.OperationBD;
+import Process.ValTam;
 import Process.ValidateInfo;
 import Windows.Clean;
 import Windows.ModalDialog;
@@ -51,14 +52,18 @@ public class New_ extends javax.swing.JPanel {
     private ValidateInfo valinfo;
     private Thread t;
     private NewValues values;
-    private final Delete dl;
+    private Delete delete1;
+    private Open open1;
+    private Select select1;
 
     public New_() {
         initComponents();
         md = null;
         t = null;
         values = NewValues.getInstance();
-        dl = new Delete();
+        delete1 = new Delete();
+        open1 = new Open();
+        select1 = new Select();
     }
 
     private boolean SelectDir(JTextField txt) {
@@ -262,13 +267,13 @@ public class New_ extends javax.swing.JPanel {
                             if (!operationBD.ErroSta()) {
                                 CleanGUIDirect();
                                 md = new ModalDialog();
-                                md.setDialogo("El proyecto fue creado con exito.");
+                                md.setDialogo("El proyecto fue creado con éxito.");
                                 md.setFrame(this);
                                 md.setTitulo("Confirmación");
                                 md.DialogCon();
-                                dl.LoadCombo();
-                                dl.revalidate();
-                                dl.repaint();
+                                delete1.LoadCombo();
+                                open1.LoadCombo();
+                                select1.LoadCombo();
                             }
                         }
 
@@ -320,16 +325,31 @@ public class New_ extends javax.swing.JPanel {
         jLabel1.setText("Nombre [Proyecto]:");
 
         txtNombre.setFont(new java.awt.Font("Microsoft YaHei", 0, 12)); // NOI18N
+        txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreKeyTyped(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Microsoft YaHei", 0, 12)); // NOI18N
         jLabel2.setText("Autor:");
 
         txtAutor.setFont(new java.awt.Font("Microsoft YaHei", 0, 12)); // NOI18N
+        txtAutor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtAutorKeyTyped(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Microsoft YaHei", 0, 12)); // NOI18N
         jLabel3.setText("Descripción:");
 
         txtDescripcion.setFont(new java.awt.Font("Microsoft YaHei", 0, 12)); // NOI18N
+        txtDescripcion.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtDescripcionKeyTyped(evt);
+            }
+        });
         jScrollPane1.setViewportView(txtDescripcion);
 
         txtRuta.setFont(new java.awt.Font("Microsoft YaHei", 0, 12)); // NOI18N
@@ -339,6 +359,11 @@ public class New_ extends javax.swing.JPanel {
             }
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtRutaFocusLost(evt);
+            }
+        });
+        txtRuta.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtRutaKeyTyped(evt);
             }
         });
 
@@ -476,6 +501,22 @@ public class New_ extends javax.swing.JPanel {
     private void txtRutaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtRutaFocusGained
         VerifyErrorTxt(txtRuta);
     }//GEN-LAST:event_txtRutaFocusGained
+
+    private void txtNombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyTyped
+        ValTam.val(evt, txtNombre, 35);
+    }//GEN-LAST:event_txtNombreKeyTyped
+
+    private void txtAutorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAutorKeyTyped
+        ValTam.val(evt, txtAutor, 100);
+    }//GEN-LAST:event_txtAutorKeyTyped
+
+    private void txtDescripcionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescripcionKeyTyped
+        ValTam.valExtP(evt, txtDescripcion, 150);
+    }//GEN-LAST:event_txtDescripcionKeyTyped
+
+    private void txtRutaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRutaKeyTyped
+        ValTam.val(evt, txtRuta, 475);
+    }//GEN-LAST:event_txtRutaKeyTyped
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCarga;
     private javax.swing.JButton btnCrear;
