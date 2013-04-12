@@ -38,26 +38,28 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
-public class configMysql {
+public class ConfigMysql {
 
     private String nombreFichero;
     private String ip;
     private String port;
     private String user;
-    private String password;
     private File archivo;
     private FileReader fr;
     private BufferedReader br;
-    private static configMysql instance = new configMysql();
+    private boolean flag;
+    private boolean sta;
+    private static ConfigMysql instance = new ConfigMysql();
 
-    private configMysql() {
+    private ConfigMysql() {
         archivo = null;
+        flag=
         fr = null;
+        sta=
         br = null;
         ip = "";
         port = "";
         user = "";
-        password = "";
         String dir = System.getProperty("user.home");
         nombreFichero = dir + "\\documents\\Metaforensic\\configMysql.ini";
     }
@@ -78,9 +80,7 @@ public class configMysql {
                     StringTokenizer useR = new StringTokenizer(br.readLine(), ":");
                     useR.nextToken();
                     user = useR.nextToken().trim();
-                    StringTokenizer pass = new StringTokenizer(br.readLine(), ":");
-                    pass.nextToken();
-                    password = pass.nextToken().trim();
+                    
                 }
             } else {
 
@@ -125,26 +125,13 @@ public class configMysql {
         String tmp1, tmp2;
         JPanel pn = new JPanel();
         JPasswordField pwd = new JPasswordField(25);
-        JLabel lb = new JLabel("Ingresa un password: \n");
+        JLabel lb = new JLabel("Ingresa el password de la BD: \n");
         pn.add(lb);
         pn.add(pwd);
 
         if (JOptionPane.showConfirmDialog(null, pn, "Conexión a la base de datos.", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
             tmp1 = new String(pwd.getPassword());
-            pn = new JPanel();
-            pwd = new JPasswordField(25);
-            lb.setText("Confirma el password: \n");
-            pn.add(lb);
-            pn.add(pwd);
-            if (JOptionPane.showConfirmDialog(null, pn, "Conexión a la base de datos.", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
-                tmp2 = new String(pwd.getPassword());
-
-                if (tmp1.equals(tmp2)) {
-                    password = tmp2;
-                } else {
-                    JOptionPane.showMessageDialog(null, "El password no es identico.", "Error de validación", JOptionPane.WARNING_MESSAGE);
-
-                }
+                    password = tmp1;
             }
         }
     }
@@ -154,7 +141,19 @@ public class configMysql {
         return password;
     }
 
-    public static configMysql getInstance() {
+    public static ConfigMysql getInstance() {
         return instance;
+    }
+
+    public boolean getFlag() {
+        return flag;
+    }
+
+    public boolean PassSta() {
+       return sta;
+    }
+
+    public void ErrPass(String string) {
+       
     }
 }
