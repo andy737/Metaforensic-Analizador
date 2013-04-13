@@ -273,8 +273,11 @@ public final class AESCrypt {
      * @param bytes the bytes
      * @throws IOException if the array can't be filled.
      */
-    protected void readBytes(InputStream in, byte[] bytes) throws IOException {
+    protected void readBytes(InputStream in, byte[] bytes, String toPath, OutputStream out) throws IOException {
         if (in.read(bytes) != bytes.length) {
+            out.close();
+            File tmp = new File(toPath);
+            tmp.delete();
             JOptionPane.showMessageDialog(null, "Fin de archivo inesperado",
                     "Error de archivo", JOptionPane.ERROR_MESSAGE);
             throw new IOException("Fin de archivo inesperado");
@@ -414,7 +417,7 @@ public final class AESCrypt {
         } catch (InvalidKeyException e) {
             out.close();
             File tmp = new File(toPath);
-            tmp.delete();            
+            tmp.delete();
             JOptionPane.showMessageDialog(null, JCE_EXCEPTION_MESSAGE,
                     "Error de Java ", JOptionPane.ERROR_MESSAGE);
             throw new GeneralSecurityException(JCE_EXCEPTION_MESSAGE, e);
@@ -457,8 +460,11 @@ public final class AESCrypt {
             debug("Opened for writing: " + toPath);
 
             text = new byte[3];
-            readBytes(in, text); // Heading.
+            readBytes(in, text, toPath, out); // Heading.
             if (!new String(text, "UTF-8").equals("AES")) {
+                out.close();
+                File tmp = new File(toPath);
+                tmp.delete();
                 JOptionPane.showMessageDialog(null,
                         "Encabezado de archivo no válido",
                         "Error de codificación",
@@ -468,6 +474,9 @@ public final class AESCrypt {
 
             version = in.read(); // Version.
             if (version < 1 || version > 2) {
+                out.close();
+                File tmp = new File(toPath);
+                tmp.delete();
                 JOptionPane.showMessageDialog(null,
                         "El número de versión no compatible: " + version,
                         "Error de configuración",
@@ -483,10 +492,13 @@ public final class AESCrypt {
                 text = new byte[2];
                 int len;
                 do {
-                    readBytes(in, text);
+                    readBytes(in, text, toPath, out);
                     len = ((0xff & (int) text[0]) << 8)
                             | (0xff & (int) text[1]);
                     if (in.skip(len) != len) {
+                        out.close();
+                        File tmp = new File(toPath);
+                        tmp.delete();
                         JOptionPane.showMessageDialog(null,
                                 "Fin inesperado de la extensión",
                                 "Error de archivo ",
@@ -498,7 +510,7 @@ public final class AESCrypt {
                 } while (len != 0);
             }
             text = new byte[BLOCK_SIZE];
-            readBytes(in, text);
+            readBytes(in, text, toPath, out);
             // Initialization Vector.
             ivSpec1 = new IvParameterSpec(text);
             aesKey1 = new SecretKeySpec(generateAESKey1(ivSpec1.getIV(),
@@ -507,7 +519,7 @@ public final class AESCrypt {
             debug("AES1: ", aesKey1.getEncoded());
             cipher.init(Cipher.DECRYPT_MODE, aesKey1, ivSpec1);
             backup = new byte[BLOCK_SIZE + KEY_SIZE];
-            readBytes(in, backup);
+            readBytes(in, backup, toPath, out);
             // IV and key to decrypt file contents.
             debug("IV2 + AES2 ciphertext: ", backup);
             text = cipher.doFinal(backup);
@@ -518,9 +530,12 @@ public final class AESCrypt {
             hmac.init(new SecretKeySpec(aesKey1.getEncoded(), HMAC_ALG));
             backup = hmac.doFinal(backup);
             text = new byte[SHA_SIZE];
-            readBytes(in, text);
+            readBytes(in, text, toPath, out);
             // HMAC and authenticity test.
             if (!Arrays.equals(backup, text)) {
+                out.close();
+                File tmp = new File(toPath);
+                tmp.delete();
                 JOptionPane.showMessageDialog(null,
                         "El archivo ha sido alterado o contraseña incorrecta",
                         "Error de autenticación ",
@@ -532,6 +547,9 @@ public final class AESCrypt {
             total = new File(fromPath).length() - total;
             // Payload size.
             if (total % BLOCK_SIZE != 0) {
+                out.close();
+                File tmp = new File(toPath);
+                tmp.delete();
                 JOptionPane.showMessageDialog(null,
                         "Archivo de entrada está dañado", "Error de archivo",
                         JOptionPane.ERROR_MESSAGE);
@@ -551,7 +569,10 @@ public final class AESCrypt {
             for (int block = (int) (total / BLOCK_SIZE); block > 0; block--) {
 
                 int len = BLOCK_SIZE;
-                if (in.read(backup, 0, len) != len) { // Cyphertext block.
+                if (in.read(backup, 0, len) != len) {
+                    out.close();
+                    File tmp = new File(toPath);
+                    tmp.delete(); // Cyphertext block.
                     JOptionPane.showMessageDialog(null,
                             "Fin inesperado de contenido del archivo",
                             "Error de archivo",
@@ -572,8 +593,11 @@ public final class AESCrypt {
 
             backup = hmac.doFinal();
             text = new byte[SHA_SIZE];
-            readBytes(in, text); // HMAC and authenticity test.
+            readBytes(in, text, toPath, out); // HMAC and authenticity test.
             if (!Arrays.equals(backup, text)) {
+                out.close();
+                File tmp = new File(toPath);
+                tmp.delete();
                 JOptionPane.showMessageDialog(null,
                         "El archivo ha sido alterado o contraseña incorrecta",
                         "Error de autenticación ",
@@ -585,7 +609,7 @@ public final class AESCrypt {
         } catch (InvalidKeyException e) {
             out.close();
             File tmp = new File(toPath);
-            tmp.delete(); 
+            tmp.delete();
             JOptionPane.showMessageDialog(null, JCE_EXCEPTION_MESSAGE,
                     "Error de Java ", JOptionPane.ERROR_MESSAGE);
             throw new GeneralSecurityException(JCE_EXCEPTION_MESSAGE, e);

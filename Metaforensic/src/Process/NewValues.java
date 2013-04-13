@@ -27,8 +27,10 @@
 package Process;
 
 /**
+ * Objeto para procesar proyecto
  *
  * @author andy737-1
+ * @version 1.0
  */
 public class NewValues {
 
@@ -41,38 +43,74 @@ public class NewValues {
     private NewValues() {
     }
 
+    /**
+     *
+     * @return instacia
+     */
     public static NewValues getInstance() {
         return instance;
     }
 
+    /**
+     *
+     * @param autor del proyecto
+     */
     public void setAutor(String autor) {
         this.autor = autor;
     }
 
+    /**
+     *
+     * @param descripcion del proyecto
+     */
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
 
+    /**
+     *
+     * @param nombre del proyecto
+     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
+    /**
+     *
+     * @param ruta del archivo .afa
+     */
     public void setRuta(String ruta) {
         this.ruta = ruta;
     }
 
+    /**
+     *
+     * @return autor
+     */
     public String getAutor() {
         return autor;
     }
 
+    /**
+     *
+     * @return descripción
+     */
     public String getDescripcion() {
         return descripcion;
     }
 
+    /**
+     *
+     * @return nombre del proyecto
+     */
     public String getNombre() {
         return nombre;
     }
 
+    /**
+     *
+     * @return ruta del archivo .afa
+     */
     public String getRuta() {
         return ruta;
     }

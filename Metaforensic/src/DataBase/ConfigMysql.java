@@ -38,6 +38,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
+/**
+ * Carga de parametros para conexción a BD
+ *
+ * @author andy737-1
+ */
 public class ConfigMysql {
 
     private String nombreFichero;
@@ -66,6 +71,9 @@ public class ConfigMysql {
         nombreFichero = dir + "\\documents\\Metaforensic\\configMysql.ini";
     }
 
+    /**
+     * Lee fichero con parametros de conexión
+     */
     public void leerFichero() {
         try {
 
@@ -108,21 +116,36 @@ public class ConfigMysql {
         }
     }
 
+    /**
+     *
+     * @return dirección de server BD
+     */
     public String getIp() {
 
         return ip;
     }
 
+    /**
+     *
+     * @return puerto de conexión a BD
+     */
     public String getPort() {
 
         return port;
     }
 
+    /**
+     *
+     * @return usuario de BD
+     */
     public String getUser() {
 
         return user;
     }
 
+    /**
+     * Seteo de password para conexión a BD
+     */
     public void setPass() {
         String tmp1;
         JPanel pn = new JPanel();
@@ -139,26 +162,47 @@ public class ConfigMysql {
         } else {
             sta = false;
             flag = true;
+            System.exit(0);
         }
     }
 
+    /**
+     *
+     * @param password reset de password interno
+     */
     public void ErrPass(String password) {
         this.password = password;
     }
 
+    /**
+     *
+     * @return password de conexión
+     */
     public String getPass() {
 
         return password;
     }
 
+    /**
+     *
+     * @return instancia de la clase
+     */
     public static ConfigMysql getInstance() {
         return instance;
     }
 
+    /**
+     *
+     * @return bandera de errores
+     */
     public boolean getFlag() {
         return flag;
     }
 
+    /**
+     *
+     * @return estado del password
+     */
     public boolean PassSta() {
         return sta;
     }

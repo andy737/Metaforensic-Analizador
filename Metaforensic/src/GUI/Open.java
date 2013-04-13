@@ -26,16 +26,27 @@
  */
 package GUI;
 
+import Crypto.AESCrypt;
+import Crypto.SecurityFile;
 import Process.IdVal;
 import Process.OpenValues;
 import Process.OperationBD;
 import Windows.ModalDialog;
 import java.awt.event.ItemEvent;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 
 /**
  *
  * @author andy737-1
+ * @version 1.0
  */
 public class Open extends javax.swing.JPanel {
 
@@ -44,11 +55,14 @@ public class Open extends javax.swing.JPanel {
     private OpenValues ov;
     private boolean flag;
     private IdVal iv;
+    private SecurityFile sf;
+    private AESCrypt aes;
 
     /**
-     * Creates new form Open
+     * Constructor inicia variables
      */
     public Open() {
+        sf = SecurityFile.getInstance();
         iv = IdVal.getInstance();
         ov = OpenValues.getInstance();
         lc = null;
@@ -56,6 +70,50 @@ public class Open extends javax.swing.JPanel {
         initComponents();
         LoadCombo();
         cmbProyectoO.setSelectedIndex(-1);
+    }
+
+    private void OpenFile() {
+        lc = new OperationBD(8);
+        if (!lc.ErroSta() && lc.getFile().exists()) {
+            String tmp1;
+            JPanel pn = new JPanel();
+            JPasswordField pwd = new JPasswordField(25);
+            JLabel lb = new JLabel("Ingresa el password del archivo: \n");
+            pn.add(lb);
+            pn.add(pwd);
+
+            if (JOptionPane.showConfirmDialog(null, pn, "Descrifrado temporal de archivo .afa.", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
+                tmp1 = new String(pwd.getPassword());
+                sf.setPass(tmp1);
+                sf.setIn(lc.getFile().toString());
+                try {
+                    aes = new AESCrypt(sf.getPass());
+                } catch (GeneralSecurityException ex) {
+                    Logger.getLogger(Open.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (UnsupportedEncodingException ex) {
+                    Logger.getLogger(Open.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                sf.setOut(lc.getFile().toString().replace("afa", "") + "txt");
+                try {
+                    aes.ProcessDe();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(null,
+                            "El archivo no puede ser leido.",
+                            "Error de lectuta/escritura",
+                            JOptionPane.ERROR_MESSAGE);
+                } catch (GeneralSecurityException ex) {
+                    JOptionPane.showMessageDialog(null,
+                            "El descrifrado falló.",
+                            "Error de algoritmo de cifrado",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(null,
+                    "El archivo no existe.\nAsegurate que se encuentre en la misma ruta cargada en la BD",
+                    "Error de lectuta",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public void LoadCombo() {
@@ -82,7 +140,7 @@ public class Open extends javax.swing.JPanel {
         md.setTitulo("Confirmación");
         md.Dialog();
         if (md.getSeleccion() == 0) {
-            //CollectMetadata();
+            OpenFile();
         }
     }
 

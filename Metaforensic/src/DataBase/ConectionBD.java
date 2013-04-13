@@ -33,6 +33,7 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 /**
+ * Conexión a base de datos Mysql
  *
  * @author andy737-1
  */
@@ -47,6 +48,9 @@ public class ConectionBD {
     private String ip;
     private ConfigMysql lee;
 
+    /**
+     * Inicializa variables constructor
+     */
     public ConectionBD() {
         lee = ConfigMysql.getInstance();
         password = "";
@@ -97,20 +101,31 @@ public class ConectionBD {
 
     }
 
+    /**
+     *
+     * @return estado de la conexión actual
+     */
     public boolean BDStatus() {
         return sta;
     }
 
+    /**
+     *
+     * @return conexión a BD
+     */
     public Connection getConexion() {
         conBD();
         return conn;
     }
 
+    /**
+     * Cerrar conexión a BD
+     */
     public void Cerrar() {
         try {
             conn.close();
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog((Component) null, "El cierre de la conexion ha la base de datos falló.", "Error de Base de Datos", JOptionPane.ERROR_MESSAGE, null);
+            JOptionPane.showMessageDialog((Component) null, "El cierre de la conexion a la base de datos falló.", "Error de Base de Datos", JOptionPane.ERROR_MESSAGE, null);
         }
     }
 }

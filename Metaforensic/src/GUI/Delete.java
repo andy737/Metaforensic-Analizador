@@ -1,6 +1,28 @@
 /*
- * To change this template, choose Tools | Templates
- * and Open the template in the editor.
+ * *****************************************************************************
+ *    
+ * Metaforensic version 1.0 - Análisis forense de metadatos en archivos
+ * electrónicos Copyright (C) 2012-2013 TSU. Andrés de Jesús Hernández Martínez,
+ * TSU. Idania Aquino Cruz, All Rights Reserved, https://github.com/andy737   
+ * 
+ * This file is part of Metaforensic.
+ *
+ * Metaforensic is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Metaforensic is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Metaforensic.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * E-mail: andy1818ster@gmail.com
+ * 
+ * *****************************************************************************
  */
 package GUI;
 
@@ -12,8 +34,10 @@ import java.awt.event.ItemEvent;
 import javax.swing.JOptionPane;
 
 /**
+ * Elimina proyecto
  *
  * @author andy737-1
+ * @version 1.0
  */
 public final class Delete extends javax.swing.JPanel {
 
@@ -26,7 +50,7 @@ public final class Delete extends javax.swing.JPanel {
     private Select select1;
 
     /**
-     * Creates new form Open
+     * Constructor inicializa variables
      */
     public Delete() {
         dv = DeleteValues.getInstance();
@@ -40,6 +64,9 @@ public final class Delete extends javax.swing.JPanel {
         select1 = new Select();
     }
 
+    /**
+     * Llena combobox
+     */
     public void LoadCombo() {
         cmbProyectoD.removeAllItems();
         cmbProyectoD.addItem(null);
@@ -85,7 +112,7 @@ public final class Delete extends javax.swing.JPanel {
     }
 
     private void ViewInfo(java.awt.event.ItemEvent evt) {
-        String[] atrib = {"Id. Proyecto: ", "Nombre: ", "Descripción: ", "Autor: ", "Fecha de Creación: ", "Hora de Creación: ", "Id. Archivo Cargado: ", "tipo: ", "Nombre de Archivo: ", "Tamaño: ", "Tipo de Cifrado: ", "Directorio: ", "Fecha de Recolección: ", "Hora de Recolección: ", "Fecha de Carga: ", "Hora de Carga: "};
+        String[] atrib = {"Id. Proyecto: ", "Nombre: ", "Descripción: ", "Autor: ", "Fecha de Creación: ", "Hora de Creación: ", "Id. Archivo Cargado: ", "Tipo: ", "Nombre de Archivo: ", "Tamaño: ", "Tipo de Cifrado: ", "Directorio: ", "Fecha de Recolección: ", "Hora de Recolección: ", "Fecha de Carga: ", "Hora de Carga: "};
         if (evt.getStateChange() == ItemEvent.SELECTED && flag) {
             txtaCon.setText("");
             dv.setId(cmbProyectoD.getSelectedItem().toString());

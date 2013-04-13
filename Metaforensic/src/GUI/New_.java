@@ -43,8 +43,10 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
+ * Crea un nuevo proyecto
  *
  * @author andy737-1
+ * @version 1.0
  */
 public class New_ extends javax.swing.JPanel {
 
@@ -56,6 +58,9 @@ public class New_ extends javax.swing.JPanel {
     private Open open1;
     private Select select1;
 
+    /**
+     * Construtor inicia variable
+     */
     public New_() {
         initComponents();
         md = null;
@@ -108,6 +113,9 @@ public class New_ extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Limpia la interfaz
+     */
     public void CleanGUIDirect() {
         if (this != null) {
             Clean.getAllComponents(this);
@@ -208,7 +216,7 @@ public class New_ extends javax.swing.JPanel {
 
     }
     /*
-     * Validación para inicar recolección
+     * Validación para crear proyecto
      */
 
     private void ValidateForm() {

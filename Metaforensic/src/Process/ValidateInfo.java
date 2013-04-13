@@ -33,7 +33,7 @@ import java.io.IOException;
  * Clase encargada de validar la información ingresada por el usuario
  *
  * @author andy737-1
- * @version 1.1
+ * @version 1.0
  */
 public class ValidateInfo {
 

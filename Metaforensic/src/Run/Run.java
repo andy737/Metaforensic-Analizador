@@ -29,7 +29,6 @@ package Run;
 import DataBase.ConectionBD;
 import DataBase.ConfigMysql;
 import GUI.Project;
-import Process.OperationBD;
 import Windows.FrameIcons;
 import Windows.WindowsStyle;
 import javax.swing.JOptionPane;
@@ -43,7 +42,7 @@ import javax.swing.SwingUtilities;
  * @version 1.0
  */
 public class Run {
-    
+
     private static ConfigMysql my;
     private static ConectionBD con;
     //static Logger logger = Logger.getLogger(Run.class);
@@ -73,7 +72,7 @@ public class Run {
         //Run.AppInit();
 
     }
-    
+
     private static void AppInit() {
         my.setPass();
         if (!my.PassSta()) {
@@ -86,7 +85,7 @@ public class Run {
                 Project pj = new Project();
                 pj.setVisible(true);
             } else {
-                
+
                 JOptionPane.showMessageDialog(null, "Debes ingresar el password correcto de la base de datos para iniciar la aplicación.", "Fin de aplicación", JOptionPane.ERROR_MESSAGE, null);
                 System.exit(0);
             }

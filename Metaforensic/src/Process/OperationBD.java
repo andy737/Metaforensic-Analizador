@@ -1,6 +1,28 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * *****************************************************************************
+ *    
+ * Metaforensic version 1.0 - Análisis forense de metadatos en archivos
+ * electrónicos Copyright (C) 2012-2013 TSU. Andrés de Jesús Hernández Martínez,
+ * TSU. Idania Aquino Cruz, All Rights Reserved, https://github.com/andy737   
+ * 
+ * This file is part of Metaforensic.
+ *
+ * Metaforensic is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Metaforensic is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Metaforensic.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * E-mail: andy1818ster@gmail.com
+ * 
+ * *****************************************************************************
  */
 package Process;
 
@@ -29,6 +51,7 @@ public class OperationBD {
     private ConectionBD conn;
     private ConfigMysql conf;
     private NewValues new_;
+    private OpenValues ov;
     private DeleteValues dl;
     private Connection con;
     private CallableStatement call;
@@ -42,10 +65,18 @@ public class OperationBD {
     private ArrayList eve;
     private ArrayList eveAll;
     private IdVal iv;
+    private File file;
 
+    /**
+     * Constructor inicia variables
+     *
+     * @param op tipo de operación sobre la BD
+     */
     public OperationBD(int op) {
+        ov = OpenValues.getInstance();
         iv = IdVal.getInstance();
         conn = new ConectionBD();
+        file = null;
         idtmp = "";
         erroglob = false;
         eve = null;
@@ -72,9 +103,10 @@ public class OperationBD {
                     CreatePro();
                     CreateProEven();
                     InsertFile();
-                    CreateEven("Se inserto el archivo \"" + fn.filename(tmp) + "\".afa en el proyecto ");
+                    CreateEven("Se cargo el archivo \"" + fn.filename(tmp) + "\".afa en el proyecto ");
 
                 } else {
+                    CreateEven("Error al cargar el archivo \"" + fn.filename(tmp) + "\".afa en el proyecto ");
                     erroglob = true;
                     conf.ErrPass("");
                 }
@@ -102,7 +134,9 @@ public class OperationBD {
                 con = conn.getConexion();
                 if (con != null) {
                     LoadInfo();
+                    CreateEven("Se cargo visualización de información del proyecto ");
                 } else {
+                    CreateEven("Error al cargar información del proyecto ");
                     erroglob = true;
                     conf.ErrPass("");
                 }
@@ -120,7 +154,9 @@ public class OperationBD {
                 con = conn.getConexion();
                 if (con != null) {
                     LoadEve();
+                    CreateEven("Se cargo visualización de eventos proyecto ");
                 } else {
+                    CreateEven("Error al cargar información de eventos del proyecto ");
                     erroglob = true;
                     conf.ErrPass("");
                 }
@@ -134,8 +170,48 @@ public class OperationBD {
                     conf.ErrPass("");
                 }
                 break;
+            case 8:
+                con = conn.getConexion();
+                if (con != null) {
+                    OpenFile();
+                    CreateEven("Se descifro el archivo " + getFile() + " del proyecto ");
+                } else {
+                    CreateEven("Error al descifrar el archivo " + getFile() + " del proyecto ");
+                    erroglob = true;
+                    conf.ErrPass("");
+                }
+                break;
         }
 
+    }
+
+    /**
+     *
+     * @return archivo para descrifrado
+     */
+    public File getFile() {
+        return file;
+    }
+
+    private void OpenFile() {
+        idtmp = ov.getId();
+        try {
+            if (conn.BDStatus()) {
+                call = con.prepareCall("{call ruta_archivo(?)}");
+                call.setString(1, ov.getId());
+                try (ResultSet rs = call.executeQuery()) {
+                    if (rs.next()) {
+                        file = new File(rs.getObject(1).toString());
+                    }
+                    rs.close();
+                }
+                call.close();
+                con.close();
+            }
+        } catch (SQLException ex) {
+            erroglob = true;
+            JOptionPane.showMessageDialog((Component) null, "La base de datos no puede cargar los eventos.", "Error de procedimiento", JOptionPane.ERROR_MESSAGE, null);
+        }
     }
 
     private void LoadEveAll() {
@@ -164,6 +240,7 @@ public class OperationBD {
     }
 
     private void LoadEve() {
+        idtmp = iv.getId();
         eve = new ArrayList();
         int i;
         try {
@@ -215,6 +292,7 @@ public class OperationBD {
     }
 
     private void LoadInfo() {
+        idtmp = iv.getId();
         info = new ArrayList();
         int i = 1;
         try {
@@ -240,7 +318,6 @@ public class OperationBD {
     }
 
     private void GeneraDelEven() {
-
         try {
             con = conn.getConexion();
             if (conn.BDStatus()) {
@@ -316,6 +393,10 @@ public class OperationBD {
         }
     }
 
+    /**
+     *
+     * @return error de la BD
+     */
     public boolean ErroSta() {
         return erroglob;
     }
@@ -374,22 +455,42 @@ public class OperationBD {
         }
     }
 
+    /**
+     *
+     * @return array para carga de combobox
+     */
     public ArrayList getCombo() {
         return combo;
     }
 
+    /**
+     *
+     * @return eventos generales
+     */
     public ArrayList getEvenAll() {
         return eveAll;
     }
 
+    /**
+     *
+     * @return todos los proyectos
+     */
     public ArrayList getAll() {
         return all;
     }
 
+    /**
+     *
+     * @return info de proyecto
+     */
     public ArrayList getInfo() {
         return info;
     }
 
+    /**
+     *
+     * @return evento particular
+     */
     public ArrayList getEven() {
         return eve;
     }

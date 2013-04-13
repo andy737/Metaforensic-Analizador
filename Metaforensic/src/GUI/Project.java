@@ -31,8 +31,10 @@ import Windows.WindowsStyle;
 import javax.swing.JOptionPane;
 
 /**
+ * Formulario principal
  *
  * @author andy737-1
+ * @version 1.0
  */
 public class Project extends javax.swing.JFrame {
 
@@ -41,7 +43,7 @@ public class Project extends javax.swing.JFrame {
     //private OperationBD lc;
 
     /**
-     * Creates new form Project
+     * Constructor inicia variables
      */
     public Project() {
         ic = FrameIcons.getInstance();

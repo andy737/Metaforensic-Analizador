@@ -36,7 +36,7 @@ import javax.swing.JOptionPane;
  * Clase encargada de mostrar dialogos modales
  *
  * @author andy737-1
- * @version 1.1
+ * @version 1.0
  */
 public class ModalDialog {
 
@@ -79,11 +79,15 @@ public class ModalDialog {
                 dialogo, titulo, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, new Object[]{"Aceptar", "Cancelar"}, "Cancelar");
     }
 
-     public void DialogCon() {
+    /**
+     * Muestra dialogo de confirmación
+     */
+    public void DialogCon() {
 
         seleccion = JOptionPane.showOptionDialog(j,
                 dialogo, titulo, JOptionPane.YES_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new Object[]{"Aceptar"}, "Aceptar");
     }
+
     /**
      *
      * @return hilo que maneja al joptionpane para evitar errores de ejecucion
