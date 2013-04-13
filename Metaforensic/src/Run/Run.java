@@ -29,6 +29,7 @@ package Run;
 import DataBase.ConectionBD;
 import DataBase.ConfigMysql;
 import GUI.Project;
+import Process.Loading;
 import Windows.FrameIcons;
 import Windows.WindowsStyle;
 import javax.swing.JOptionPane;
@@ -74,16 +75,29 @@ public class Run {
     }
 
     private static void AppInit() {
+        final Loading cg = new Loading();
+        final Thread load = new Thread(cg);
         my.setPass();
         if (!my.PassSta()) {
             JOptionPane.showMessageDialog(null, "Debes ingresar el password de la base de datos para iniciar la aplicación.", "Fin de aplicación", JOptionPane.ERROR_MESSAGE, null);
             System.exit(0);
         } else {
+            cg.setTit("Conectado....");
+            load.start();
             con.getConexion();
             if (con.BDStatus()) {
                 con.Cerrar();
-                Project pj = new Project();
-                pj.setVisible(true);
+
+                Thread pj = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Project pj = new Project();
+                        pj.setVisible(true);
+                        cg.loa.dispose();
+                        load.stop();
+                    }
+                });
+                pj.start();
             } else {
 
                 JOptionPane.showMessageDialog(null, "Debes ingresar el password correcto de la base de datos para iniciar la aplicación.", "Fin de aplicación", JOptionPane.ERROR_MESSAGE, null);

@@ -28,6 +28,7 @@ package GUI;
 
 import Process.DateTime;
 import Process.IdVal;
+import Process.Loading;
 import Process.OperationBD;
 import Process.SelectValues;
 import Windows.ModalDialog;
@@ -103,12 +104,13 @@ public class Select extends javax.swing.JPanel {
     }
 
     private void ViewInfo(java.awt.event.ItemEvent evt) {
-        String[] atrib = {"Id. Proyecto: ", "Nombre: ", "Descripción: ", "Autor: ", "Fecha de Creación: ", "Hora de Creación: ", "Id. Archivo Cargado: ", "tipo: ", "Nombre de Archivo: ", "Tamaño: ", "Tipo de Cifrado: ", "Directorio: ", "Fecha de Recolección: ", "Hora de Recolección: ", "Fecha de Carga: ", "Hora de Carga: "};
+        final String[] atrib = {"Id. Proyecto: ", "Nombre: ", "Descripción: ", "Autor: ", "Fecha de Creación: ", "Hora de Creación: ", "Id. Archivo Cargado: ", "tipo: ", "Nombre de Archivo: ", "Tamaño: ", "Tipo de Cifrado: ", "Directorio: ", "Fecha de Recolección: ", "Hora de Recolección: ", "Fecha de Carga: ", "Hora de Carga: "};
         if (evt.getStateChange() == ItemEvent.SELECTED && flag) {
             rdbTodo.setSelected(false);
             txtaCon.setText("");
             sv.setId(cmbProyectoS.getSelectedItem().toString());
             iv.setId(sv.getId());
+
             lc = new OperationBD(4);
             for (int i = 0; i < lc.getInfo().size(); i++) {
                 txtaCon.append(atrib[i]);
@@ -116,12 +118,11 @@ public class Select extends javax.swing.JPanel {
             }
             txtaCon.setCaretPosition(0);
         }
-
     }
 
     private void ViewEve() {
+        final String[] atrib = {"Id. Evento: ", "Descripción: ", "Fecha Evento: ", "Hora_evento: "};
         int j = 0;
-        String[] atrib = {"Id. Evento: ", "Descripción: ", "Fecha Evento: ", "Hora_evento: "};
         if (flag && !rdbTodo.isSelected()) {
             txtaCon.setText("");
             if (cmbProyectoS.getSelectedItem() == null || cmbProyectoS.getSelectedItem().equals("")) {
@@ -146,10 +147,12 @@ public class Select extends javax.swing.JPanel {
                 }
                 txtaCon.setCaretPosition(0);
             }
+
         } else {
             if (rdbTodo.isSelected()) {
-                j = 0;
+
                 txtaCon.setText("");
+
                 lc = new OperationBD(7);
                 for (int i = 0; i < lc.getEvenAll().size(); i++) {
                     if (j == 4) {
@@ -162,18 +165,20 @@ public class Select extends javax.swing.JPanel {
                 }
                 txtaCon.setCaretPosition(0);
             }
+
         }
 
     }
 
     private void ViewAll(java.awt.event.ItemEvent evt) {
-        String[] atrib = {"Id. Proyecto: ", "Nombre: ", "Descripción: ", "Autor: ", "Fecha de Creación: ", "Hora de Creación: ", "Id. Archivo cargado: ", "tipo: ", "Nombre de Archivo: ", "Tamaño: ", "Tipo de Cifrado: ", "Directorio: ", "Fecha de Recolección: ", "Hora de Recolección: ", "Fecha de Carga: ", "Hora de Carga: "};
         int j = 0;
+        final String[] atrib = {"Id. Proyecto: ", "Nombre: ", "Descripción: ", "Autor: ", "Fecha de Creación: ", "Hora de Creación: ", "Id. Archivo cargado: ", "tipo: ", "Nombre de Archivo: ", "Tamaño: ", "Tipo de Cifrado: ", "Directorio: ", "Fecha de Recolección: ", "Hora de Recolección: ", "Fecha de Carga: ", "Hora de Carga: "};
         if (evt.getStateChange() == ItemEvent.SELECTED && flag) {
             txtaCon.setText("");
             cmbProyectoS.setSelectedIndex(-1);
 //            sv.setId(cmbProyectoS.getSelectedItem().toString());
             //          iv.setId(sv.getId());
+
             lc = new OperationBD(5);
             for (int i = 0; i < lc.getAll().size(); i++) {
                 if (j == 16) {
@@ -186,7 +191,6 @@ public class Select extends javax.swing.JPanel {
             }
             txtaCon.setCaretPosition(0);
         }
-
     }
 
     private void CreateFile(String path) {
