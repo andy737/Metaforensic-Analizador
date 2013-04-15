@@ -28,7 +28,6 @@ package GUI;
 
 import Process.DateTime;
 import Process.IdVal;
-import Process.Loading;
 import Process.OperationBD;
 import Process.SelectValues;
 import Windows.ModalDialog;
@@ -234,7 +233,6 @@ public class Select extends javax.swing.JPanel {
                 md.setFrame(this);
                 md.DialogCon();
             } else {
-                txt.setText("");
                 md = new ModalDialog();
                 md.setDialogo("El directorio no existe.");
                 md.setTitulo("Error de ruta");
@@ -281,7 +279,7 @@ public class Select extends javax.swing.JPanel {
         btnSalir = new javax.swing.JButton();
         btnEventos = new javax.swing.JButton();
         rdbTodo = new javax.swing.JRadioButton();
-        btnGuarda = new javax.swing.JButton();
+        btnGuardar = new javax.swing.JButton();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -349,16 +347,16 @@ public class Select extends javax.swing.JPanel {
             }
         });
 
-        btnGuarda.setFont(new java.awt.Font("Microsoft YaHei", 1, 11)); // NOI18N
-        btnGuarda.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/stiffy.png"))); // NOI18N
-        btnGuarda.setMnemonic('o');
-        btnGuarda.setText("Guardar");
-        btnGuarda.setMaximumSize(new java.awt.Dimension(93, 25));
-        btnGuarda.setMinimumSize(new java.awt.Dimension(93, 25));
-        btnGuarda.setPreferredSize(new java.awt.Dimension(93, 25));
-        btnGuarda.addActionListener(new java.awt.event.ActionListener() {
+        btnGuardar.setFont(new java.awt.Font("Microsoft YaHei", 1, 11)); // NOI18N
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/stiffy.png"))); // NOI18N
+        btnGuardar.setMnemonic('o');
+        btnGuardar.setText("Guardar");
+        btnGuardar.setMaximumSize(new java.awt.Dimension(93, 25));
+        btnGuardar.setMinimumSize(new java.awt.Dimension(93, 25));
+        btnGuardar.setPreferredSize(new java.awt.Dimension(93, 25));
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardaActionPerformed(evt);
+                btnGuardarActionPerformed(evt);
             }
         });
 
@@ -369,7 +367,7 @@ public class Select extends javax.swing.JPanel {
             .addComponent(jScrollPane2)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnGuarda, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -406,7 +404,7 @@ public class Select extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnGuarda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -415,9 +413,9 @@ public class Select extends javax.swing.JPanel {
         ExitApp();
     }//GEN-LAST:event_btnSalirActionPerformed
 
-    private void btnGuardaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardaActionPerformed
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         ValidaTxt();
-    }//GEN-LAST:event_btnGuardaActionPerformed
+    }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void cmbProyectoSItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbProyectoSItemStateChanged
         ViewInfo(evt);
@@ -430,9 +428,10 @@ public class Select extends javax.swing.JPanel {
     private void btnEventosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventosActionPerformed
         ViewEve();
     }//GEN-LAST:event_btnEventosActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEventos;
-    private javax.swing.JButton btnGuarda;
+    private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnSalir;
     private javax.swing.JComboBox cmbProyectoS;
     private javax.swing.JFileChooser fchGuardar;

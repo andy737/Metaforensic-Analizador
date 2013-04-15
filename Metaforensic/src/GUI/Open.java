@@ -31,6 +31,7 @@ import Crypto.SecurityFile;
 import Process.IdVal;
 import Process.OpenValues;
 import Process.OperationBD;
+import Process.WindowStat;
 import Windows.ModalDialog;
 import java.awt.event.ItemEvent;
 import java.io.IOException;
@@ -44,6 +45,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
 /**
+ * Apertura de un proyecto existente
  *
  * @author andy737-1
  * @version 1.0
@@ -57,11 +59,13 @@ public class Open extends javax.swing.JPanel {
     private IdVal iv;
     private SecurityFile sf;
     private AESCrypt aes;
+    private WindowStat stid;
 
     /**
      * Constructor inicia variables
      */
     public Open() {
+        stid = WindowStat.getWinInstance();
         sf = SecurityFile.getInstance();
         iv = IdVal.getInstance();
         ov = OpenValues.getInstance();
@@ -75,40 +79,56 @@ public class Open extends javax.swing.JPanel {
     private void OpenFile() {
         lc = new OperationBD(8);
         if (!lc.ErroSta() && lc.getFile().exists()) {
-            String tmp1;
-            JPanel pn = new JPanel();
-            JPasswordField pwd = new JPasswordField(25);
-            JLabel lb = new JLabel("Ingresa el password del archivo: \n");
-            pn.add(lb);
-            pn.add(pwd);
+            if (!stid.getEstadoID().equals(lc.getFile().toString())) {
+                stid.setEstadoId(lc.getFile().toString());
+                String tmp1;
+                JPanel pn = new JPanel();
+                JPasswordField pwd = new JPasswordField(25);
+                JLabel lb = new JLabel("Ingresa el password del archivo: \n");
+                pn.add(lb);
+                pn.add(pwd);
 
-            if (JOptionPane.showConfirmDialog(null, pn, "Descrifrado temporal de archivo .afa.", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
-                tmp1 = new String(pwd.getPassword());
-                sf.setPass(tmp1);
-                sf.setIn(lc.getFile().toString());
-                try {
-                    aes = new AESCrypt(sf.getPass());
-                } catch (GeneralSecurityException ex) {
-                    Logger.getLogger(Open.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (UnsupportedEncodingException ex) {
-                    Logger.getLogger(Open.class.getName()).log(Level.SEVERE, null, ex);
+                if (JOptionPane.showConfirmDialog(null, pn, "Descrifrado temporal de archivo .afa.", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
+                    tmp1 = new String(pwd.getPassword());
+                    sf.setPass(tmp1);
+                    sf.setIn(lc.getFile().toString());
+                    try {
+                        aes = new AESCrypt(sf.getPass());
+                    } catch (GeneralSecurityException ex) {
+                        Logger.getLogger(Open.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (UnsupportedEncodingException ex) {
+                        Logger.getLogger(Open.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                    sf.setOut(lc.getFile().toString().replace("afa", "") + "txt");
+                    try {
+                        aes.ProcessDe();
+                        Report rp = new Report(lc.getFile().toString().replace("afa", "") + "txt");
+                        rp.setVisible(true);
+                    } catch (IOException ex) {
+                        stid.setEstadoId("");
+                        JOptionPane.showMessageDialog(null,
+                                "El archivo no puede ser leido.",
+                                "Error de lectuta/escritura",
+                                JOptionPane.ERROR_MESSAGE);
+                    } catch (GeneralSecurityException ex) {
+                        stid.setEstadoId("");
+                        JOptionPane.showMessageDialog(null,
+                                "El descrifrado falló.",
+                                "Error de algoritmo de cifrado",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    stid.setEstadoId("");
                 }
-                sf.setOut(lc.getFile().toString().replace("afa", "") + "txt");
-                try {
-                    aes.ProcessDe();
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(null,
-                            "El archivo no puede ser leido.",
-                            "Error de lectuta/escritura",
-                            JOptionPane.ERROR_MESSAGE);
-                } catch (GeneralSecurityException ex) {
-                    JOptionPane.showMessageDialog(null,
-                            "El descrifrado falló.",
-                            "Error de algoritmo de cifrado",
-                            JOptionPane.ERROR_MESSAGE);
-                }
+            } else {
+                JOptionPane.showMessageDialog(null,
+                        "El archivo seleccionado ya se encuentra abierto, elige un archivo diferente.",
+                        "Error de validación",
+                        JOptionPane.ERROR_MESSAGE);
             }
         } else {
+            stid.setEstadoId("");
             JOptionPane.showMessageDialog(null,
                     "El archivo no existe.\nAsegurate que se encuentre en la misma ruta cargada en la BD",
                     "Error de lectuta",
@@ -116,6 +136,9 @@ public class Open extends javax.swing.JPanel {
         }
     }
 
+    /**
+     * Carga combobox
+     */
     public void LoadCombo() {
         cmbProyectoO.removeAllItems();
         cmbProyectoO.addItem(null);
@@ -197,8 +220,8 @@ public class Open extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         txtaInfo = new javax.swing.JTextArea();
         jSeparator1 = new javax.swing.JSeparator();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnSalir = new javax.swing.JButton();
+        btnOpen = new javax.swing.JButton();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -228,29 +251,29 @@ public class Open extends javax.swing.JPanel {
         txtaInfo.setEnabled(false);
         jScrollPane2.setViewportView(txtaInfo);
 
-        jButton1.setFont(new java.awt.Font("Microsoft YaHei", 1, 11)); // NOI18N
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/out.png"))); // NOI18N
-        jButton1.setMnemonic('x');
-        jButton1.setText("Salir");
-        jButton1.setMaximumSize(new java.awt.Dimension(93, 25));
-        jButton1.setMinimumSize(new java.awt.Dimension(93, 25));
-        jButton1.setPreferredSize(new java.awt.Dimension(93, 25));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnSalir.setFont(new java.awt.Font("Microsoft YaHei", 1, 11)); // NOI18N
+        btnSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/out.png"))); // NOI18N
+        btnSalir.setMnemonic('x');
+        btnSalir.setText("Salir");
+        btnSalir.setMaximumSize(new java.awt.Dimension(93, 25));
+        btnSalir.setMinimumSize(new java.awt.Dimension(93, 25));
+        btnSalir.setPreferredSize(new java.awt.Dimension(93, 25));
+        btnSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnSalirActionPerformed(evt);
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Microsoft YaHei", 1, 11)); // NOI18N
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/book-lines-2.png"))); // NOI18N
-        jButton2.setMnemonic('o');
-        jButton2.setText("Abrir");
-        jButton2.setMaximumSize(new java.awt.Dimension(93, 25));
-        jButton2.setMinimumSize(new java.awt.Dimension(93, 25));
-        jButton2.setPreferredSize(new java.awt.Dimension(93, 25));
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnOpen.setFont(new java.awt.Font("Microsoft YaHei", 1, 11)); // NOI18N
+        btnOpen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/book-lines-2.png"))); // NOI18N
+        btnOpen.setMnemonic('o');
+        btnOpen.setText("Abrir");
+        btnOpen.setMaximumSize(new java.awt.Dimension(93, 25));
+        btnOpen.setMinimumSize(new java.awt.Dimension(93, 25));
+        btnOpen.setPreferredSize(new java.awt.Dimension(93, 25));
+        btnOpen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnOpenActionPerformed(evt);
             }
         });
 
@@ -267,9 +290,9 @@ public class Open extends javax.swing.JPanel {
             .addComponent(jScrollPane2)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnOpen, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(
@@ -286,27 +309,27 @@ public class Open extends javax.swing.JPanel {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnOpen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOpenActionPerformed
         ValidaCombo();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnOpenActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         ExitApp();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnSalirActionPerformed
 
     private void cmbProyectoOItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbProyectoOItemStateChanged
         ViewInfo(evt);
     }//GEN-LAST:event_cmbProyectoOItemStateChanged
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnOpen;
+    private javax.swing.JButton btnSalir;
     private javax.swing.JComboBox cmbProyectoO;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;

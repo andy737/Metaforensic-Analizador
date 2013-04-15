@@ -42,8 +42,10 @@ import java.util.GregorianCalendar;
 import javax.swing.JOptionPane;
 
 /**
+ * Define todas las operaciones sobre la BD
  *
  * @author andy737-1
+ * @version 1.0
  */
 public class OperationBD {
 
@@ -174,9 +176,9 @@ public class OperationBD {
                 con = conn.getConexion();
                 if (con != null) {
                     OpenFile();
-                    CreateEven("Se descifro el archivo " + getFile() + " del proyecto ");
+                    CreateEven("Se descifro el archivo " + getFile().getName() + " del proyecto ");
                 } else {
-                    CreateEven("Error al descifrar el archivo " + getFile() + " del proyecto ");
+                    CreateEven("Error al descifrar el archivo " + getFile().getName() + " del proyecto ");
                     erroglob = true;
                     conf.ErrPass("");
                 }

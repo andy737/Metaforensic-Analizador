@@ -29,6 +29,7 @@ package Windows;
 import GUI.Delete;
 import GUI.New_;
 import GUI.Open;
+import GUI.Report;
 import GUI.Select;
 import javax.swing.JOptionPane;
 
@@ -47,6 +48,7 @@ public class ModalDialog {
     private Open k;
     private Delete h;
     private Select i;
+    private Report m;
 
     /**
      * Constructor que inicia variables
@@ -157,5 +159,9 @@ public class ModalDialog {
 
     public void setFrame(Select i) {
         this.i = i;
+    }
+
+    public void setFrame(Report m) {
+        this.m = m;
     }
 }
