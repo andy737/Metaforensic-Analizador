@@ -1,10 +1,2 @@
-*.class
-
-# Package Files #
-*.jar
-*.war
-*.ear
 /Metaforensic/nbproject/private/
-/Metaforensic/build/
-/Metaforensic/dist/
 /Metaforensic_1/nbproject/private/
