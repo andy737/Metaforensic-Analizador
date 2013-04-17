@@ -175,9 +175,6 @@ public class Select extends javax.swing.JPanel {
         if (evt.getStateChange() == ItemEvent.SELECTED && flag) {
             txtaCon.setText("");
             cmbProyectoS.setSelectedIndex(-1);
-//            sv.setId(cmbProyectoS.getSelectedItem().toString());
-            //          iv.setId(sv.getId());
-
             lc = new OperationBD(5);
             for (int i = 0; i < lc.getAll().size(); i++) {
                 if (j == 16) {
