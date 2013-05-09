@@ -866,7 +866,7 @@ public class Report extends javax.swing.JFrame {
         btnOtro.setEnabled(false);
         cmbFile.setEnabled(false);
         rbTodo.setEnabled(false);
-        salir = true;
+        salir = false;
         load.start();
         Thread ope = new Thread() {
             @Override
@@ -910,7 +910,7 @@ public class Report extends javax.swing.JFrame {
                     btnOtro.setEnabled(true);
                     cmbFile.setEnabled(true);
                     rbTodo.setEnabled(true);
-                    salir = false;
+                    salir = true;
                 }
             }
         };
