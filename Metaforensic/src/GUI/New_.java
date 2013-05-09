@@ -1,7 +1,7 @@
 /*
  * *****************************************************************************
  *    
- * Metaforensic version 1.0 - Análisis forense de metadatos en archivos
+ * Metaforensic version 1.1 - Análisis forense de metadatos en archivos
  * electrónicos Copyright (C) 2012-2013 TSU. Andrés de Jesús Hernández Martínez,
  * TSU. Idania Aquino Cruz, All Rights Reserved, https://github.com/andy737   
  * 
@@ -38,7 +38,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -46,7 +45,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  * Crea un nuevo proyecto
  *
  * @author andy737-1
- * @version 1.0
+ * @version 1.1
  */
 public class New_ extends javax.swing.JPanel {
 
@@ -88,7 +87,6 @@ public class New_ extends javax.swing.JPanel {
                 md = new ModalDialog();
                 md.setDialogo("El archivo no existe.");
                 md.setTitulo("Error de ruta");
-                md.setFrame(this);
                 md.DialogErrFix();
                 txt.requestFocus(true);
                 ciclo = true;
@@ -109,7 +107,7 @@ public class New_ extends javax.swing.JPanel {
         try {
             CleanDialog("Limpiar", "¿Deseas limpiar los campos y opciones?");
         } catch (IOException ex) {
-            Logger.getLogger(New_.class.getName()).log(Level.SEVERE, null, ex);
+            /*Ignore*/
         }
     }
 
@@ -143,7 +141,7 @@ public class New_ extends javax.swing.JPanel {
             md = new ModalDialog();
             md.setDialogo(dialogo);
             md.setTitulo(titulo);
-            md.Dialog();
+            md.DialogQues();
             if (this != null && md.getSeleccion() == 0) {
                 Clean.getAllComponents(this);
                 Clean.CleanTxt();
@@ -186,8 +184,15 @@ public class New_ extends javax.swing.JPanel {
     }
 
     private void ExitApp() {
-        int seleccion = JOptionPane.showOptionDialog(this, "¿Deseas salir de la aplicación?", "Salir", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Aceptar", "Cancelar"}, "Cancelar");
-        if (seleccion == 0) {
+        md = new ModalDialog();
+        md.setDialogo("¿Deseas salir de la aplicación?");
+        md.setTitulo("Salir");
+        md.DialogQues();
+        if (md.getSeleccion() == 0) {
+            File fl = new File(Report.file);
+            if (fl.exists()) {
+                fl.delete();
+            }
             System.exit(0);
         }
     }
@@ -203,7 +208,6 @@ public class New_ extends javax.swing.JPanel {
                 md = new ModalDialog();
                 md.setDialogo("El archivo no existe.");
                 md.setTitulo("Error de ruta");
-                md.setFrame(this);
                 t = md.DialogErr();
                 t.start();
                 txt.requestFocus();
@@ -234,7 +238,6 @@ public class New_ extends javax.swing.JPanel {
                 case 1:
                     md = new ModalDialog();
                     md.setDialogo("Ingresa un nombre para el proyecto.");
-                    md.setFrame(this);
                     md.setTitulo("Error de validación");
                     md.DialogErrFix();
                     txtNombre.requestFocus();
@@ -242,7 +245,6 @@ public class New_ extends javax.swing.JPanel {
                 case 2:
                     md = new ModalDialog();
                     md.setDialogo("Ingresa tu nombre.");
-                    md.setFrame(this);
                     md.setTitulo("Error de validación");
                     md.DialogErrFix();
                     txtAutor.requestFocus();
@@ -250,7 +252,6 @@ public class New_ extends javax.swing.JPanel {
                 case 3:
                     md = new ModalDialog();
                     md.setDialogo("Ingresa una breve descripción del proyecto.");
-                    md.setFrame(this);
                     md.setTitulo("Error de validación");
                     md.DialogErrFix();
                     txtDescripcion.requestFocus();
@@ -258,7 +259,6 @@ public class New_ extends javax.swing.JPanel {
                 case 4:
                     md = new ModalDialog();
                     md.setDialogo("Ingresa la ruta y nombre del archivo .afa validos.");
-                    md.setFrame(this);
                     md.setTitulo("Error de validación");
                     md.DialogErrFix();
                     txtRuta.requestFocus();
@@ -267,18 +267,16 @@ public class New_ extends javax.swing.JPanel {
                     try {
                         md = new ModalDialog();
                         md.setDialogo("¿Deseas continuar con la creación del proyecto?");
-                        md.setFrame(this);
                         md.setTitulo("Confirmación");
-                        md.Dialog();
+                        md.DialogQues();
                         if (md.getSeleccion() == 0) {
                             OperationBD operationBD = new OperationBD(1);
                             if (!operationBD.ErroSta()) {
                                 CleanGUIDirect();
                                 md = new ModalDialog();
                                 md.setDialogo("El proyecto fue creado con éxito.");
-                                md.setFrame(this);
                                 md.setTitulo("Confirmación");
-                                md.DialogCon();
+                                md.DialogInfo();
                                 delete1.LoadCombo();
                                 open1.LoadCombo();
                                 select1.LoadCombo();

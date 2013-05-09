@@ -1,7 +1,7 @@
 /*
  * *****************************************************************************
  *    
- * Metaforensic version 1.0 - Análisis forense de metadatos en archivos
+ * Metaforensic version 1.1 - Análisis forense de metadatos en archivos
  * electrónicos Copyright (C) 2012-2013 TSU. Andrés de Jesús Hernández Martínez,
  * TSU. Idania Aquino Cruz, All Rights Reserved, https://github.com/andy737   
  * 
@@ -31,13 +31,13 @@ import Process.IdVal;
 import Process.OperationBD;
 import Windows.ModalDialog;
 import java.awt.event.ItemEvent;
-import javax.swing.JOptionPane;
+import java.io.File;
 
 /**
  * Elimina proyecto
  *
  * @author andy737-1
- * @version 1.0
+ * @version 1.1
  */
 public final class Delete extends javax.swing.JPanel {
 
@@ -87,9 +87,8 @@ public final class Delete extends javax.swing.JPanel {
     private void InitProcess() {
         md = new ModalDialog();
         md.setDialogo("¿Deseas eliminar el proyecto seleccionado?");
-        md.setFrame(this);
         md.setTitulo("Confirmación");
-        md.Dialog();
+        md.DialogQues();
         if (md.getSeleccion() == 0) {
             dv.setId(cmbProyectoD.getSelectedItem().toString());
             lc = new OperationBD(3);
@@ -101,9 +100,8 @@ public final class Delete extends javax.swing.JPanel {
                 txtaCon.setText("");
                 md = new ModalDialog();
                 md.setDialogo("El proyecto fue eliminado con éxito.");
-                md.setFrame(this);
-                md.setTitulo("Confirmación");
-                md.DialogCon();
+                md.setTitulo("Información");
+                md.DialogInfo();
                 open1.LoadCombo();
                 select1.LoadCombo();
             }
@@ -112,7 +110,7 @@ public final class Delete extends javax.swing.JPanel {
     }
 
     private void ViewInfo(java.awt.event.ItemEvent evt) {
-        String[] atrib = {"Id. Proyecto: ", "Nombre: ", "Descripción: ", "Autor: ", "Fecha de Creación: ", "Hora de Creación: ", "Id. Archivo Cargado: ", "Tipo: ", "Nombre de Archivo: ", "Tamaño: ", "Tipo de Cifrado: ", "Directorio: ", "Fecha de Recolección: ", "Hora de Recolección: ", "Fecha de Carga: ", "Hora de Carga: "};
+        String[] atrib = {"Id. Proyecto: ", "Nombre: ", "Descripción: ", "Autor: ", "Fecha de Creación: ", "Hora de Creación: ", "Id. Archivo Cargado: ", "Extensión: ", "Nombre de Archivo: ", "Tamaño: ", "Tipo de Cifrado: ", "Directorio: ", "Fecha de Recolección: ", "Hora de Recolección: ", "Fecha de Carga: ", "Hora de Carga: "};
         if (evt.getStateChange() == ItemEvent.SELECTED && flag) {
             txtaCon.setText("");
             dv.setId(cmbProyectoD.getSelectedItem().toString());
@@ -131,7 +129,6 @@ public final class Delete extends javax.swing.JPanel {
         if (cmbProyectoD.getSelectedIndex() == -1) {
             md = new ModalDialog();
             md.setDialogo("Selecciona un proyecto.");
-            md.setFrame(this);
             md.setTitulo("Error de validación");
             md.DialogErrFix();
             cmbProyectoD.requestFocus();
@@ -141,8 +138,15 @@ public final class Delete extends javax.swing.JPanel {
     }
 
     private void ExitApp() {
-        int seleccion = JOptionPane.showOptionDialog(this, "¿Deseas salir de la aplicación?", "Salir", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Aceptar", "Cancelar"}, "Cancelar");
-        if (seleccion == 0) {
+        md = new ModalDialog();
+        md.setDialogo("¿Deseas salir de la aplicación?");
+        md.setTitulo("Salir");
+        md.DialogQues();
+        if (md.getSeleccion() == 0) {
+            File fl = new File(Report.file);
+            if (fl.exists()) {
+               fl.delete(); 
+            }            
             System.exit(0);
         }
     }
@@ -166,7 +170,6 @@ public final class Delete extends javax.swing.JPanel {
         jSeparator1 = new javax.swing.JSeparator();
         btnSalir = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -222,35 +225,25 @@ public final class Delete extends javax.swing.JPanel {
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Microsoft YaHei", 1, 12)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/spam-2.png"))); // NOI18N
-        jLabel3.setText("Esta acción no es reversible");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane2)
             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 245, Short.MAX_VALUE)
+                .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(layout.createSequentialGroup()
                 .addComponent(cmbProyectoD, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 208, Short.MAX_VALUE))
+                .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2))
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(42, 42, 42))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -259,11 +252,9 @@ public final class Delete extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cmbProyectoD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -291,7 +282,6 @@ public final class Delete extends javax.swing.JPanel {
     private javax.swing.JComboBox cmbProyectoD;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;

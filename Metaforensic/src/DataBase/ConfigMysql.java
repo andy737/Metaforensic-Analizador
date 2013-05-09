@@ -1,7 +1,7 @@
 /*
  * *****************************************************************************
  *    
- * Metaforensic version 1.0 - Análisis forense de metadatos en archivos
+ * Metaforensic version 1.1 - Análisis forense de metadatos en archivos
  * electrónicos Copyright (C) 2012-2013 TSU. Andrés de Jesús Hernández Martínez,
  * TSU. Idania Aquino Cruz, All Rights Reserved, https://github.com/andy737   
  * 
@@ -27,11 +27,9 @@
 package DataBase;
 
 import java.awt.Component;
-import java.awt.HeadlessException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.StringTokenizer;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -42,6 +40,7 @@ import javax.swing.JPasswordField;
  * Carga de parametros para conexción a BD
  *
  * @author andy737-1
+ * @version 1.1
  */
 public class ConfigMysql {
 
@@ -74,6 +73,7 @@ public class ConfigMysql {
     /**
      * Lee fichero con parametros de conexión
      */
+    @SuppressWarnings("UseSpecificCatch")
     public void leerFichero() {
         try {
 
@@ -98,9 +98,8 @@ public class ConfigMysql {
 
             }
 
-        } catch (IOException | HeadlessException e) {
-            JOptionPane.showMessageDialog((Component) null, "Error de archivo de fichero de configuración global.", "Error de E/S", JOptionPane.ERROR_MESSAGE, null);
-
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog((Component) null, "Error de archivo de configuración global.", "Error de E/S", JOptionPane.ERROR_MESSAGE, null);
 
         } finally {
 
@@ -108,7 +107,7 @@ public class ConfigMysql {
                 if (fr != null) {
                     fr.close();
                 }
-            } catch (Exception e2) {
+            } catch (Exception e) {
                 JOptionPane.showMessageDialog((Component) null, "Error de cierre del archivo de configuración global.", "Error de E/S", JOptionPane.ERROR_MESSAGE, null);
                 System.exit(0);
 
@@ -158,10 +157,11 @@ public class ConfigMysql {
             tmp1 = new String(pwd.getPassword());
             password = tmp1;
             sta = true;
-            flag = false;
+            if (tmp1 == null || tmp1.equals("")) {
+                sta = false;
+
+            }
         } else {
-            sta = false;
-            flag = true;
             System.exit(0);
         }
     }
@@ -189,14 +189,6 @@ public class ConfigMysql {
      */
     public static ConfigMysql getInstance() {
         return instance;
-    }
-
-    /**
-     *
-     * @return bandera de errores
-     */
-    public boolean getFlag() {
-        return flag;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * *****************************************************************************
  *    
- * Metaforensic version 1.0 - Análisis forense de metadatos en archivos
+ * Metaforensic version 1.1 - Análisis forense de metadatos en archivos
  * electrónicos Copyright (C) 2012-2013 TSU. Andrés de Jesús Hernández Martínez,
  * TSU. Idania Aquino Cruz, All Rights Reserved, https://github.com/andy737   
  * 
@@ -38,14 +38,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
 /**
- * Visualización de información sobre de proyectos y eventos en la BD
+ * Visualización de información sobre proyectos y eventos en la BD
  *
  * @author andy737-1
- * @version 1.0
+ * @version 1.1
  */
 public class Select extends javax.swing.JPanel {
 
@@ -89,8 +88,15 @@ public class Select extends javax.swing.JPanel {
     }
 
     private void ExitApp() {
-        int seleccion = JOptionPane.showOptionDialog(this, "¿Deseas salir de la aplicación?", "Salir", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Aceptar", "Cancelar"}, "Cancelar");
-        if (seleccion == 0) {
+        md = new ModalDialog();
+        md.setDialogo("¿Deseas salir de la aplicación?");
+        md.setTitulo("Salir");
+        md.DialogQues();
+        if (md.getSeleccion() == 0) {
+            File fl = new File(Report.file);
+            if (fl.exists()) {
+                fl.delete();
+            }
             System.exit(0);
         }
     }
@@ -103,7 +109,7 @@ public class Select extends javax.swing.JPanel {
     }
 
     private void ViewInfo(java.awt.event.ItemEvent evt) {
-        final String[] atrib = {"Id. Proyecto: ", "Nombre: ", "Descripción: ", "Autor: ", "Fecha de Creación: ", "Hora de Creación: ", "Id. Archivo Cargado: ", "tipo: ", "Nombre de Archivo: ", "Tamaño: ", "Tipo de Cifrado: ", "Directorio: ", "Fecha de Recolección: ", "Hora de Recolección: ", "Fecha de Carga: ", "Hora de Carga: "};
+        final String[] atrib = {"Id. Proyecto: ", "Nombre: ", "Descripción: ", "Autor: ", "Fecha de Creación: ", "Hora de Creación: ", "Id. Archivo Cargado: ", "Extensión: ", "Nombre de Archivo: ", "Tamaño: ", "Tipo de Cifrado: ", "Directorio: ", "Fecha de Recolección: ", "Hora de Recolección: ", "Fecha de Carga: ", "Hora de Carga: "};
         if (evt.getStateChange() == ItemEvent.SELECTED && flag) {
             rdbTodo.setSelected(false);
             txtaCon.setText("");
@@ -123,12 +129,12 @@ public class Select extends javax.swing.JPanel {
         final String[] atrib = {"Id. Evento: ", "Descripción: ", "Fecha Evento: ", "Hora_evento: "};
         int j = 0;
         if (flag && !rdbTodo.isSelected()) {
+            rdbTodo.setSelected(false);
             txtaCon.setText("");
             if (cmbProyectoS.getSelectedItem() == null || cmbProyectoS.getSelectedItem().equals("")) {
                 md = new ModalDialog();
                 md.setDialogo("Selecciona un proyecto.");
                 md.setTitulo("Error de visualización");
-                md.setFrame(this);
                 md.DialogErrFix();
                 cmbProyectoS.requestFocus();
             } else {
@@ -149,9 +155,8 @@ public class Select extends javax.swing.JPanel {
 
         } else {
             if (rdbTodo.isSelected()) {
-
+                rdbTodo.setSelected(false);
                 txtaCon.setText("");
-
                 lc = new OperationBD(7);
                 for (int i = 0; i < lc.getEvenAll().size(); i++) {
                     if (j == 4) {
@@ -199,7 +204,6 @@ public class Select extends javax.swing.JPanel {
         } catch (IOException ex) {
             md.setDialogo("No se pudo crear el archivo " + path + "\\" + DateTime.getDate().toString().replace("-", "") + "_" + DateTime.getTimeMilli().toString().replace(":", "") + "_" + cmbProyectoS.getSelectedItem() + ".log" + " en la carpeta: \n" + path);
             md.setTitulo("Error de archivo");
-            md.setFrame(this);
             md.DialogErr();
         } finally {
             if (outfinal != null) {
@@ -208,7 +212,6 @@ public class Select extends javax.swing.JPanel {
                 } catch (IOException ex) {
                     md.setDialogo("No se pudo cerrar corretacmente el archivo " + path + "\\" + DateTime.getDate().toString().replace("-", "") + "_" + DateTime.getTimeMilli().toString().replace(":", "") + "_" + cmbProyectoS.getSelectedItem() + ".log");
                     md.setTitulo("Error de archivo");
-                    md.setFrame(this);
                     md.DialogErr();
                 }
             }
@@ -227,13 +230,11 @@ public class Select extends javax.swing.JPanel {
                 md = new ModalDialog();
                 md.setDialogo("El archivo fue creado con éxito.");
                 md.setTitulo("Confirmación");
-                md.setFrame(this);
-                md.DialogCon();
+                md.DialogInfo();
             } else {
                 md = new ModalDialog();
                 md.setDialogo("El directorio no existe.");
                 md.setTitulo("Error de ruta");
-                md.setFrame(this);
                 md.DialogErrFix();
                 txt.requestFocus(true);
                 ciclo = true;
@@ -246,7 +247,6 @@ public class Select extends javax.swing.JPanel {
         if (txtaCon.getText().equals("") || txtaCon.getText() == null) {
             md = new ModalDialog();
             md.setDialogo("Selecciona un proyecto o evento.");
-            md.setFrame(this);
             md.setTitulo("Error de validación");
             md.DialogErrFix();
             cmbProyectoS.requestFocus();
@@ -425,7 +425,6 @@ public class Select extends javax.swing.JPanel {
     private void btnEventosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEventosActionPerformed
         ViewEve();
     }//GEN-LAST:event_btnEventosActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEventos;
     private javax.swing.JButton btnGuardar;

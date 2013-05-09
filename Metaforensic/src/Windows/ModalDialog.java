@@ -1,7 +1,7 @@
 /*
  * *****************************************************************************
  *    
- * Metaforensic version 1.0 - Análisis forense de metadatos en archivos
+ * Metaforensic version 1.1 - Análisis forense de metadatos en archivos
  * electrónicos Copyright (C) 2012-2013 TSU. Andrés de Jesús Hernández Martínez,
  * TSU. Idania Aquino Cruz, All Rights Reserved, https://github.com/andy737   
  * 
@@ -26,29 +26,21 @@
  */
 package Windows;
 
-import GUI.Delete;
-import GUI.New_;
-import GUI.Open;
-import GUI.Report;
-import GUI.Select;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
  * Clase encargada de mostrar dialogos modales
  *
  * @author andy737-1
- * @version 1.0
+ * @version 1.1
  */
 public class ModalDialog {
 
     private int seleccion;
     private String dialogo;
     private String titulo;
-    private New_ j;
-    private Open k;
-    private Delete h;
-    private Select i;
-    private Report m;
+    private JFrame j;
 
     /**
      * Constructor que inicia variables
@@ -58,15 +50,12 @@ public class ModalDialog {
         dialogo = "";
         titulo = "";
         j = null;
-        k = null;
-        h = null;
-        i = null;
     }
 
     /**
      * Muestra dialogo de confirmación
      */
-    public void Dialog() {
+    public void DialogQues() {
 
         seleccion = JOptionPane.showOptionDialog(j,
                 dialogo, titulo, JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Aceptar", "Cancelar"}, "Cancelar");
@@ -82,9 +71,9 @@ public class ModalDialog {
     }
 
     /**
-     * Muestra dialogo de confirmación
+     * Muestra dialogo de información
      */
-    public void DialogCon() {
+    public void DialogInfo() {
 
         seleccion = JOptionPane.showOptionDialog(j,
                 dialogo, titulo, JOptionPane.YES_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new Object[]{"Aceptar"}, "Aceptar");
@@ -137,7 +126,7 @@ public class ModalDialog {
      *
      * @param j frame padre
      */
-    public void setFrame(New_ j) {
+    public void setFrame(JFrame j) {
         this.j = j;
     }
 
@@ -147,21 +136,5 @@ public class ModalDialog {
      */
     public int getSeleccion() {
         return seleccion;
-    }
-
-    public void setFrame(Open k) {
-        this.k = k;
-    }
-
-    public void setFrame(Delete h) {
-        this.h = h;
-    }
-
-    public void setFrame(Select i) {
-        this.i = i;
-    }
-
-    public void setFrame(Report m) {
-        this.m = m;
     }
 }

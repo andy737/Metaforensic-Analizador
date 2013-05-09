@@ -1,7 +1,7 @@
 /*
  * *****************************************************************************
  *    
- * Metaforensic version 1.0 - Análisis forense de metadatos en archivos
+ * Metaforensic version 1.1 - Análisis forense de metadatos en archivos
  * electrónicos Copyright (C) 2012-2013 TSU. Andrés de Jesús Hernández Martínez,
  * TSU. Idania Aquino Cruz, All Rights Reserved, https://github.com/andy737   
  * 
@@ -32,13 +32,13 @@ import Process.IdVal;
 import Process.OpenValues;
 import Process.OperationBD;
 import Process.WindowStat;
+import Windows.Carga;
 import Windows.ModalDialog;
 import java.awt.event.ItemEvent;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -48,7 +48,7 @@ import javax.swing.JPasswordField;
  * Apertura de un proyecto existente
  *
  * @author andy737-1
- * @version 1.0
+ * @version 1.1
  */
 public class Open extends javax.swing.JPanel {
 
@@ -64,6 +64,7 @@ public class Open extends javax.swing.JPanel {
     /**
      * Constructor inicia variables
      */
+    @SuppressWarnings("OverridableMethodCallInConstructor")
     public Open() {
         stid = WindowStat.getWinInstance();
         sf = SecurityFile.getInstance();
@@ -95,44 +96,61 @@ public class Open extends javax.swing.JPanel {
                     try {
                         aes = new AESCrypt(sf.getPass());
                     } catch (GeneralSecurityException ex) {
-                        Logger.getLogger(Open.class.getName()).log(Level.SEVERE, null, ex);
+                        /*Ignore*/
                     } catch (UnsupportedEncodingException ex) {
-                        Logger.getLogger(Open.class.getName()).log(Level.SEVERE, null, ex);
+                        /*Ignore*/
                     }
 
                     sf.setOut(lc.getFile().toString().replace("afa", "") + "txt");
-                    try {
-                        aes.ProcessDe();
-                        Report rp = new Report(lc.getFile().toString().replace("afa", "") + "txt");
-                        rp.setVisible(true);
-                    } catch (IOException ex) {
-                        stid.setEstadoId("");
-                        JOptionPane.showMessageDialog(null,
-                                "El archivo no puede ser leido.",
-                                "Error de lectuta/escritura",
-                                JOptionPane.ERROR_MESSAGE);
-                    } catch (GeneralSecurityException ex) {
-                        stid.setEstadoId("");
-                        JOptionPane.showMessageDialog(null,
-                                "El descrifrado falló.",
-                                "Error de algoritmo de cifrado",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
+                    final Carga cg = new Carga("Descifrando...");
+                    final Thread load = new Thread() {
+                        @Override
+                        public void run() {
+                            cg.setVisible(true);
+                        }
+                    };
+                    load.start();
+                    Thread ope = new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                aes.ProcessDe();
+                                Report rp = new Report(lc.getFile().toString().replace("afa", "") + "txt");
+                                rp.setVisible(true);
+                            } catch (IOException ex) {
+                                stid.setEstadoId("");
+                                md = new ModalDialog();
+                                md.setDialogo("El archivo no puede ser leido.");
+                                md.setTitulo("Error de lectuta/escritura");
+                                md.DialogErrFix();
+                            } catch (GeneralSecurityException ex) {
+                                stid.setEstadoId("");
+                                md = new ModalDialog();
+                                md.setDialogo("El descrifrado falló.");
+                                md.setTitulo("Error de algoritmo de cifrado");
+                                md.DialogErrFix();
+                            } finally {
+                                cg.dispose();
+                                load.stop();
+                            }
+                        }
+                    };
+                    ope.start();
                 } else {
                     stid.setEstadoId("");
                 }
             } else {
-                JOptionPane.showMessageDialog(null,
-                        "El archivo seleccionado ya se encuentra abierto, elige un archivo diferente.",
-                        "Error de validación",
-                        JOptionPane.ERROR_MESSAGE);
+                md = new ModalDialog();
+                md.setDialogo("El archivo seleccionado ya se encuentra abierto, elige un archivo diferente.");
+                md.setTitulo("Error de validación");
+                md.DialogErrFix();
             }
         } else {
             stid.setEstadoId("");
-            JOptionPane.showMessageDialog(null,
-                    "El archivo no existe.\nAsegurate que se encuentre en la misma ruta cargada en la BD",
-                    "Error de lectuta",
-                    JOptionPane.ERROR_MESSAGE);
+            md = new ModalDialog();
+            md.setDialogo("El archivo no existe.\nAsegurate que se encuentre en la misma ruta cargada en la BD.");
+            md.setTitulo("Error de lectuta");
+            md.DialogErrFix();
         }
     }
 
@@ -159,9 +177,8 @@ public class Open extends javax.swing.JPanel {
     private void InitProcess() {
         md = new ModalDialog();
         md.setDialogo("¿Deseas continuar con la apertura del proyecto seleccionado?");
-        md.setFrame(this);
         md.setTitulo("Confirmación");
-        md.Dialog();
+        md.DialogQues();
         if (md.getSeleccion() == 0) {
             OpenFile();
         }
@@ -171,7 +188,6 @@ public class Open extends javax.swing.JPanel {
         if (cmbProyectoO.getSelectedIndex() == -1) {
             md = new ModalDialog();
             md.setDialogo("Selecciona un proyecto.");
-            md.setFrame(this);
             md.setTitulo("Error de validación");
             md.DialogErrFix();
             cmbProyectoO.requestFocus();
@@ -181,14 +197,21 @@ public class Open extends javax.swing.JPanel {
     }
 
     private void ExitApp() {
-        int seleccion = JOptionPane.showOptionDialog(this, "¿Deseas salir de la aplicación?", "Salir", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Aceptar", "Cancelar"}, "Cancelar");
-        if (seleccion == 0) {
+        md = new ModalDialog();
+        md.setDialogo("¿Deseas salir de la aplicación?");
+        md.setTitulo("Salir");
+        md.DialogQues();
+        if (md.getSeleccion() == 0) {
+            File fl = new File(Report.file);
+            if (fl.exists()) {
+                fl.delete();
+            }
             System.exit(0);
         }
     }
 
     private void ViewInfo(java.awt.event.ItemEvent evt) {
-        String[] atrib = {"Id. Proyecto: ", "Nombre: ", "Descripción: ", "Autor: ", "Fecha de Creación: ", "Hora de Creación: ", "Id. Archivo Cargado: ", "tipo: ", "Nombre de Archivo: ", "Tamaño: ", "Tipo de Cifrado: ", "Directorio: ", "Fecha de Recolección: ", "Hora de Recolección: ", "Fecha de Carga: ", "Hora de Carga: "};
+        String[] atrib = {"Id. Proyecto: ", "Nombre: ", "Descripción: ", "Autor: ", "Fecha de Creación: ", "Hora de Creación: ", "Id. Archivo Cargado: ", "Extensión: ", "Nombre de Archivo: ", "Tamaño: ", "Tipo de Cifrado: ", "Directorio: ", "Fecha de Recolección: ", "Hora de Recolección: ", "Fecha de Carga: ", "Hora de Carga: "};
         if (evt.getStateChange() == ItemEvent.SELECTED && flag) {
             txtaInfo.setText("");
             ov.setId(cmbProyectoO.getSelectedItem().toString());

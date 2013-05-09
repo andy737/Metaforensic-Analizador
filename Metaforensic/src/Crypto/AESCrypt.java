@@ -11,11 +11,13 @@ import java.net.NetworkInterface;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Enumeration;
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.JOptionPane;
@@ -75,10 +77,6 @@ public final class AESCrypt {
      */
     private SecurityFile param = SecurityFile.getInstance();
     /**
-     * The debug.
-     */
-    private final boolean DEBUG;
-    /**
      * The password.
      */
     private byte[] password;
@@ -114,39 +112,6 @@ public final class AESCrypt {
      * The aes key2.
      */
     private SecretKeySpec aesKey2;
-
-    /**
-     * ***************** PRIVATE METHODS * *****************.
-     *
-     * @param message the message
-     */
-    /**
-     * Prints a debug message on standard output if DEBUG mode is turned on.
-     */
-    protected void debug(String message) {
-        if (DEBUG) {
-            System.out.println("[DEBUG] " + message);
-        }
-    }
-
-    /**
-     * Prints a debug message on standard output if DEBUG mode is turned on.
-     *
-     * @param message the message
-     * @param bytes the bytes
-     */
-    protected void debug(String message, byte[] bytes) {
-        if (DEBUG) {
-            StringBuilder buffer = new StringBuilder("[DEBUG] ");
-            buffer.append(message);
-            buffer.append("[");
-            for (int i = 0; i < bytes.length; i++) {
-                buffer.append(bytes[i]);
-                buffer.append(i < bytes.length - 1 ? ", " : "]");
-            }
-            System.out.println(buffer.toString());
-        }
-    }
 
     /**
      * Generates a pseudo-random byte array.
@@ -315,13 +280,12 @@ public final class AESCrypt {
     public AESCrypt(boolean debug, String password)
             throws GeneralSecurityException, UnsupportedEncodingException {
         try {
-            DEBUG = debug;
             setPassword(password);
             random = SecureRandom.getInstance(RANDOM_ALG);
             digest = MessageDigest.getInstance(DIGEST_ALG);
             cipher = Cipher.getInstance(CRYPT_TRANS);
             hmac = Mac.getInstance(HMAC_ALG);
-        } catch (GeneralSecurityException e) {
+        } catch (NoClassDefFoundError | ExceptionInInitializerError | UnsupportedEncodingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
             JOptionPane.showMessageDialog(null, JCE_EXCEPTION_MESSAGE,
                     "Error de Java ", JOptionPane.ERROR_MESSAGE);
             throw new GeneralSecurityException(JCE_EXCEPTION_MESSAGE, e);
@@ -337,98 +301,6 @@ public final class AESCrypt {
     public void setPassword(String password)
             throws UnsupportedEncodingException {
         this.password = password.getBytes("UTF-16LE");
-        debug("Password usado: ", this.password);
-    }
-
-    /**
-     * The file at <tt>fromPath</tt> is encrypted and saved at <tt>toPath</tt>
-     * location.
-     *
-     *
-     * <tt>version</tt> can be either 1 or 2.
-     *
-     * @param version the version
-     * @param fromPath the from path
-     * @param toPath the to path
-     * @throws IOException when there are I/O errors.
-     * @throws GeneralSecurityException if the platform does not support the
-     * required cryptographic methods.
-     */
-    public void encrypt(int version, String fromPath, String toPath)
-            throws IOException, GeneralSecurityException {
-        InputStream in = null;
-        OutputStream out = null;
-        @SuppressWarnings("UnusedAssignment")
-        byte[] text = null;
-        try {
-            ivSpec1 = new IvParameterSpec(generateIv1());
-            aesKey1 = new SecretKeySpec(generateAESKey1(ivSpec1.getIV(),
-                    password), CRYPT_ALG);
-            ivSpec2 = new IvParameterSpec(generateIV2());
-            aesKey2 = new SecretKeySpec(generateAESKey2(), CRYPT_ALG);
-            debug("IV1: ", ivSpec1.getIV());
-            debug("AES1: ", aesKey1.getEncoded());
-            debug("IV2: ", ivSpec2.getIV());
-            debug("AES2: ", aesKey2.getEncoded());
-
-            in = new FileInputStream(fromPath);
-            debug("Abierto para la lectura: " + fromPath);
-            out = new FileOutputStream(toPath);
-            debug("Abierto para la escritura: " + toPath);
-
-            out.write("AES".getBytes("UTF-8")); // Heading.
-            out.write(version); // Version.
-            out.write(0); // Reserved.
-            if (version == 2) { // No extensions.
-                out.write(0);
-                out.write(0);
-            }
-            out.write(ivSpec1.getIV()); // Initialization Vector.
-
-            text = new byte[BLOCK_SIZE + KEY_SIZE];
-            cipher.init(Cipher.ENCRYPT_MODE, aesKey1, ivSpec1);
-            cipher.update(ivSpec2.getIV(), 0, BLOCK_SIZE, text);
-            cipher.doFinal(aesKey2.getEncoded(), 0, KEY_SIZE, text, BLOCK_SIZE);
-            out.write(text); // Crypted IV and key.
-            debug("IV2 + AES2 ciphertext: ", text);
-
-            hmac.init(new SecretKeySpec(aesKey1.getEncoded(), HMAC_ALG));
-            text = hmac.doFinal(text);
-            out.write(text); // HMAC from previous cyphertext.
-            debug("HMAC1: ", text);
-
-            cipher.init(Cipher.ENCRYPT_MODE, aesKey2, ivSpec2);
-            hmac.init(new SecretKeySpec(aesKey2.getEncoded(), HMAC_ALG));
-            text = new byte[BLOCK_SIZE];
-            int len, last = 0;
-            while ((len = in.read(text)) > 0) {
-                cipher.update(text, 0, BLOCK_SIZE, text);
-                hmac.update(text);
-                out.write(text); // Crypted file data block.
-                last = len;
-            }
-            last &= 0x0f;
-            out.write(last); // Last block size mod 16.
-            debug("Último bloque de tamaño mod 16: " + last);
-
-            text = hmac.doFinal();
-            out.write(text); // HMAC from previous cyphertext.
-            debug("HMAC2: ", text);
-        } catch (InvalidKeyException e) {
-            out.close();
-            File tmp = new File(toPath);
-            tmp.delete();
-            JOptionPane.showMessageDialog(null, JCE_EXCEPTION_MESSAGE,
-                    "Error de Java ", JOptionPane.ERROR_MESSAGE);
-            throw new GeneralSecurityException(JCE_EXCEPTION_MESSAGE, e);
-        } finally {
-            if (in != null) {
-                in.close();
-            }
-            if (out != null) {
-                out.close();
-            }
-        }
     }
 
     /**
@@ -455,10 +327,7 @@ public final class AESCrypt {
         int version;
         try {
             in = new FileInputStream(fromPath);
-            debug("Opened for reading: " + fromPath);
             out = new FileOutputStream(toPath);
-            debug("Opened for writing: " + toPath);
-
             text = new byte[3];
             readBytes(in, text, toPath, out); // Heading.
             if (!new String(text, "UTF-8").equals("AES")) {
@@ -484,8 +353,6 @@ public final class AESCrypt {
                 throw new IOException("El número de versión no compatible: "
                         + version);
             }
-            debug("Version: " + version);
-
             in.read(); // Reserved.
 
             if (version == 2) { // Extensions.
@@ -506,7 +373,6 @@ public final class AESCrypt {
                         throw new IOException("Fin inesperado de la extensión");
                     }
                     total += 2 + len;
-                    debug("Skipped extension sized: " + len);
                 } while (len != 0);
             }
             text = new byte[BLOCK_SIZE];
@@ -515,18 +381,13 @@ public final class AESCrypt {
             ivSpec1 = new IvParameterSpec(text);
             aesKey1 = new SecretKeySpec(generateAESKey1(ivSpec1.getIV(),
                     password), CRYPT_ALG);
-            debug("IV1: ", ivSpec1.getIV());
-            debug("AES1: ", aesKey1.getEncoded());
             cipher.init(Cipher.DECRYPT_MODE, aesKey1, ivSpec1);
             backup = new byte[BLOCK_SIZE + KEY_SIZE];
             readBytes(in, backup, toPath, out);
             // IV and key to decrypt file contents.
-            debug("IV2 + AES2 ciphertext: ", backup);
             text = cipher.doFinal(backup);
             ivSpec2 = new IvParameterSpec(text, 0, BLOCK_SIZE);
             aesKey2 = new SecretKeySpec(text, BLOCK_SIZE, KEY_SIZE, CRYPT_ALG);
-            debug("IV2: ", ivSpec2.getIV());
-            debug("AES2: ", aesKey2.getEncoded());
             hmac.init(new SecretKeySpec(aesKey1.getEncoded(), HMAC_ALG));
             backup = hmac.doFinal(backup);
             text = new byte[SHA_SIZE];
@@ -543,7 +404,6 @@ public final class AESCrypt {
                 throw new IOException(
                         "El archivo ha sido alterado o contraseña incorrecta");
             }
-            debug("HMAC1: ", text);
             total = new File(fromPath).length() - total;
             // Payload size.
             if (total % BLOCK_SIZE != 0) {
@@ -561,7 +421,6 @@ public final class AESCrypt {
                 in.read();
                 // Skip last block size mod 16.
             }
-            debug("Payload size: " + total);
             cipher.init(Cipher.DECRYPT_MODE, aesKey2, ivSpec2);
             hmac.init(new SecretKeySpec(aesKey2.getEncoded(), HMAC_ALG));
             backup = new byte[BLOCK_SIZE];
@@ -584,7 +443,6 @@ public final class AESCrypt {
                 hmac.update(backup, 0, len);
                 if (block == 1) {
                     int last = in.read(); // Last block size mod 16.
-                    debug("Last block size mod 16: " + last);
                     len = (last > 0 ? last : BLOCK_SIZE);
                 }
                 out.write(text, 0, len);
@@ -605,7 +463,6 @@ public final class AESCrypt {
                 throw new IOException(
                         "El archivo ha sido alterado o contraseña incorrecta");
             }
-            debug("HMAC2: ", text);
         } catch (InvalidKeyException e) {
             out.close();
             File tmp = new File(toPath);
@@ -624,18 +481,7 @@ public final class AESCrypt {
     }
 
     /**
-     * Process en.
-     *
-     * @throws IOException Signals that an I/O exception has occurred.
-     * @throws GeneralSecurityException the general security exception
-     */
-    public void ProcessEn() throws IOException, GeneralSecurityException {
-        encrypt(2, param.getIn(), param.getOut());
-
-    }
-
-    /**
-     * Process de.
+     * Process desencriptado
      *
      * @throws IOException Signals that an I/O exception has occurred.
      * @throws GeneralSecurityException the general security exception

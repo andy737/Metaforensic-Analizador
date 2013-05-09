@@ -1,7 +1,7 @@
 /*
  * *****************************************************************************
  *    
- * Metaforensic version 1.0 - Análisis forense de metadatos en archivos
+ * Metaforensic version 1.1 - Análisis forense de metadatos en archivos
  * electrónicos Copyright (C) 2012-2013 TSU. Andrés de Jesús Hernández Martínez,
  * TSU. Idania Aquino Cruz, All Rights Reserved, https://github.com/andy737   
  * 
@@ -29,7 +29,7 @@ package Run;
 import DataBase.ConectionBD;
 import DataBase.ConfigMysql;
 import GUI.Project;
-import Process.Loading;
+import Windows.Loading;
 import Windows.FrameIcons;
 import Windows.WindowsStyle;
 import javax.swing.JOptionPane;
@@ -40,13 +40,12 @@ import javax.swing.SwingUtilities;
  *
  *
  * @author andy737-1
- * @version 1.0
+ * @version 1.1
  */
 public class Run {
 
     private static ConfigMysql my;
     private static ConectionBD con;
-    //static Logger logger = Logger.getLogger(Run.class);
     private static FrameIcons ic;
 
     /**
@@ -67,11 +66,6 @@ public class Run {
                 AppInit();
             }
         });
-        //BasicConfigurator.configure();
-        //logger.info("Ingresando a la aplicación");
-        //Splash.RunSplash(null, false);        
-        //Run.AppInit();
-
     }
 
     private static void AppInit() {
@@ -87,7 +81,6 @@ public class Run {
             con.getConexion();
             if (con.BDStatus()) {
                 con.Cerrar();
-
                 Thread pj = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -99,9 +92,8 @@ public class Run {
                 });
                 pj.start();
             } else {
-
-                JOptionPane.showMessageDialog(null, "Debes ingresar el password correcto de la base de datos para iniciar la aplicación.", "Fin de aplicación", JOptionPane.ERROR_MESSAGE, null);
-                System.exit(0);
+                cg.loa.dispose();
+                load.stop();
             }
         }
     }

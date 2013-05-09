@@ -1,7 +1,7 @@
 /*
  * *****************************************************************************
  *    
- * Metaforensic version 1.0 - Análisis forense de metadatos en archivos
+ * Metaforensic version 1.1 - Análisis forense de metadatos en archivos
  * electrónicos Copyright (C) 2012-2013 TSU. Andrés de Jesús Hernández Martínez,
  * TSU. Idania Aquino Cruz, All Rights Reserved, https://github.com/andy737   
  * 
@@ -27,20 +27,22 @@
 package GUI;
 
 import Windows.FrameIcons;
+import Windows.ModalDialog;
 import Windows.WindowsStyle;
-import javax.swing.JOptionPane;
+import java.io.File;
 
 /**
  * Formulario principal
  *
  * @author andy737-1
- * @version 1.0
+ * @version 1.1
  */
 public class Project extends javax.swing.JFrame {
 
     private FrameIcons ic;
     //private CardLayout paneles;
     //private OperationBD lc;
+    private ModalDialog md;
 
     /**
      * Constructor inicia variables
@@ -107,8 +109,16 @@ public class Project extends javax.swing.JFrame {
     }
 
     private void ExitApp() {
-        int seleccion = JOptionPane.showOptionDialog(this, "¿Deseas salir de la aplicación?", "Salir", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Aceptar", "Cancelar"}, "Cancelar");
-        if (seleccion == 0) {
+        md = new ModalDialog();
+        md.setDialogo("¿Deseas salir de la aplicación?");
+        md.setTitulo("Salir");
+        md.setFrame(this);
+        md.DialogQues();
+        if (md.getSeleccion() == 0) {
+            File fl = new File(Report.file);
+            if (fl.exists()) {
+                fl.delete();
+            }
             System.exit(0);
         }
     }
@@ -154,11 +164,6 @@ public class Project extends javax.swing.JFrame {
         btnNuevo.setMnemonic('w');
         btnNuevo.setText("Nuevo");
         btnNuevo.setToolTipText("");
-        btnNuevo.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnNuevoMouseClicked(evt);
-            }
-        });
         btnNuevo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNuevoActionPerformed(evt);
@@ -277,9 +282,6 @@ public class Project extends javax.swing.JFrame {
     private void lbAcercaDeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbAcercaDeMouseClicked
         CallAboutUS();
     }//GEN-LAST:event_lbAcercaDeMouseClicked
-
-    private void btnNuevoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnNuevoMouseClicked
-    }//GEN-LAST:event_btnNuevoMouseClicked
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
         LoadPanel(1);

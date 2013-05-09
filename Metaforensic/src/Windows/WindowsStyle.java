@@ -1,7 +1,7 @@
 /*
  * *****************************************************************************
  *    
- * Metaforensic version 1.0 - Análisis forense de metadatos en archivos
+ * Metaforensic version 1.1 - Análisis forense de metadatos en archivos
  * electrónicos Copyright (C) 2012-2013 TSU. Andrés de Jesús Hernández Martínez,
  * TSU. Idania Aquino Cruz, All Rights Reserved, https://github.com/andy737   
  * 
@@ -26,8 +26,6 @@
  */
 package Windows;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.UnsupportedLookAndFeelException;
 
 /**
@@ -35,9 +33,11 @@ import javax.swing.UnsupportedLookAndFeelException;
  * host
  *
  * @author andy737-1
- * @version 1.0
+ * @version 1.1
  */
 public class WindowsStyle {
+
+    private static ModalDialog md;
 
     /**
      * Metodo que setaea el estilo ventana por el tipo "Windows"
@@ -49,13 +49,16 @@ public class WindowsStyle {
                 try {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                 } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(WindowsStyle.class.getName()).log(Level.SEVERE, null, ex);
+                    /*Ignore*/
                 } catch (InstantiationException ex) {
-                    Logger.getLogger(WindowsStyle.class.getName()).log(Level.SEVERE, null, ex);
+                    /*Ignore*/
                 } catch (IllegalAccessException ex) {
-                    Logger.getLogger(WindowsStyle.class.getName()).log(Level.SEVERE, null, ex);
+                    /*Ignore*/
                 } catch (UnsupportedLookAndFeelException ex) {
-                    Logger.getLogger(WindowsStyle.class.getName()).log(Level.SEVERE, null, ex);
+                    md = new ModalDialog();
+                    md.setDialogo("La aplicación no pudo cargar el estilo de ventanas actual de su sistema.");
+                    md.setTitulo("Error de estilo en ventanas");
+                    md.DialogErrFix();
                 }
             }
 

@@ -1,7 +1,7 @@
 /*
  * *****************************************************************************
  *    
- * Metaforensic version 1.0 - Análisis forense de metadatos en archivos
+ * Metaforensic version 1.1 - Análisis forense de metadatos en archivos
  * electrónicos Copyright (C) 2012-2013 TSU. Andrés de Jesús Hernández Martínez,
  * TSU. Idania Aquino Cruz, All Rights Reserved, https://github.com/andy737   
  * 
@@ -45,7 +45,7 @@ import javax.swing.JOptionPane;
  * Define todas las operaciones sobre la BD
  *
  * @author andy737-1
- * @version 1.0
+ * @version 1.1
  */
 public class OperationBD {
 
@@ -105,10 +105,10 @@ public class OperationBD {
                     CreatePro();
                     CreateProEven();
                     InsertFile();
-                    CreateEven("Se cargo el archivo \"" + fn.filename(tmp) + "\".afa en el proyecto ");
+                    CreateEven("Se cargo el archivo \"" + fn.filename(tmp) + "\".afa en el proyecto");
 
                 } else {
-                    CreateEven("Error al cargar el archivo \"" + fn.filename(tmp) + "\".afa en el proyecto ");
+                    CreateEven("Error al cargar el archivo \"" + fn.filename(tmp) + "\".afa en el proyecto");
                     erroglob = true;
                     conf.ErrPass("");
                 }
@@ -136,9 +136,9 @@ public class OperationBD {
                 con = conn.getConexion();
                 if (con != null) {
                     LoadInfo();
-                    CreateEven("Se cargo visualización de información del proyecto ");
+                    CreateEven("Se cargo visualización de información del proyecto");
                 } else {
-                    CreateEven("Error al cargar información del proyecto ");
+                    CreateEven("Error al cargar información del proyecto");
                     erroglob = true;
                     conf.ErrPass("");
                 }
@@ -156,9 +156,9 @@ public class OperationBD {
                 con = conn.getConexion();
                 if (con != null) {
                     LoadEve();
-                    CreateEven("Se cargo visualización de eventos proyecto ");
+                    CreateEven("Se cargo visualización de eventos proyecto");
                 } else {
-                    CreateEven("Error al cargar información de eventos del proyecto ");
+                    CreateEven("Error al cargar información de eventos del proyecto");
                     erroglob = true;
                     conf.ErrPass("");
                 }
@@ -176,9 +176,9 @@ public class OperationBD {
                 con = conn.getConexion();
                 if (con != null) {
                     OpenFile();
-                    CreateEven("Se descifro el archivo " + getFile().getName() + " del proyecto ");
+                    CreateEven("Se descifro el archivo " + getFile().getName() + " del proyecto");
                 } else {
-                    CreateEven("Error al descifrar el archivo " + getFile().getName() + " del proyecto ");
+                    CreateEven("Error al descifrar el archivo " + getFile().getName() + " del proyecto");
                     erroglob = true;
                     conf.ErrPass("");
                 }

@@ -1,7 +1,7 @@
 /*
  * *****************************************************************************
  *    
- * Metaforensic version 1.0 - Análisis forense de metadatos en archivos
+ * Metaforensic version 1.1 - Análisis forense de metadatos en archivos
  * electrónicos Copyright (C) 2012-2013 TSU. Andrés de Jesús Hernández Martínez,
  * TSU. Idania Aquino Cruz, All Rights Reserved, https://github.com/andy737   
  * 
@@ -36,11 +36,13 @@ import javax.swing.JOptionPane;
  * Conexión a base de datos Mysql
  *
  * @author andy737-1
+ * @version 1.1
  */
 public class ConectionBD {
 
     private Connection conn;
     private boolean sta;
+    private boolean stapass;
     private String controlador;
     private String password;
     private String user;
@@ -59,6 +61,7 @@ public class ConectionBD {
         ip = "";
         conn = null;
         sta = true;
+        stapass = true;
         controlador = "com.mysql.jdbc.Driver";
     }
 
@@ -76,27 +79,18 @@ public class ConectionBD {
             } catch (ClassNotFoundException e) {
                 sta = false;
                 JOptionPane.showMessageDialog((Component) null, "La aplicación no se pudo conectar a la base de datos.\nRevisa la configuración.", "Error de Conexión", JOptionPane.ERROR_MESSAGE, null);
-                // System.exit(0);
             } catch (SQLException e) {
                 sta = false;
-                if (!lee.getFlag()) {
-                    JOptionPane.showMessageDialog((Component) null, "La contraseña es incorrecta.", "Error de autenticación", JOptionPane.ERROR_MESSAGE, null);
-                }
-                //System.exit(0);
+                JOptionPane.showMessageDialog((Component) null, "La aplicación no se pudo conectar a la base de datos.\nRevisa la configuración.", "Error de Conexión", JOptionPane.ERROR_MESSAGE, null);
             } catch (InstantiationException e) {
                 sta = false;
                 JOptionPane.showMessageDialog((Component) null, "La aplicación no se pudo conectar a la base de datos.\nRevisa la configuración.", "Error de Conexión", JOptionPane.ERROR_MESSAGE, null);
-                // System.exit(0);
             } catch (IllegalAccessException e) {
                 sta = false;
                 JOptionPane.showMessageDialog((Component) null, "La aplicación no se pudo conectar a la base de datos.\nRevisa la configuración.", "Error de Conexión", JOptionPane.ERROR_MESSAGE, null);
-                //System.exit(0);
             }
         } else {
             sta = false;
-            JOptionPane.showMessageDialog((Component) null, "El fichero global no contiene una configuración correcta o no existe.", "Error de Base de Datos", JOptionPane.ERROR_MESSAGE, null);
-            //System.exit(0);
-
         }
 
     }
